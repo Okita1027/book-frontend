@@ -1,0 +1,15 @@
+// Publisher相关类型定义
+
+import type { Book } from './Book';
+
+export interface Publisher {
+  updatedTime: string;
+  id: number;
+  name: string;
+  books?: Book[] | null;
+  createdTime: string;
+}
+
+export interface EditPublisherDTO {
+  name: string;
+}
