@@ -2,6 +2,7 @@
 
 export interface AuthResponseDTO {
   token?: string | null;
+  id?: number | null;
   name?: string | null;
   role?: string | null;
   expiresAt: string;

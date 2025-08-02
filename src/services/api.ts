@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // 创建axios实例
 export const apiClient = axios.create({
-  baseURL: '/api', // 根据实际后端地址调整
+  baseURL: '/api', // 通过Vite代理转发到后端服务
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -13,10 +13,18 @@ export const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
-    // 可以在这里添加token等认证信息
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 从zustand persist存储中获取token
+    const authStorage = localStorage.getItem('auth-storage');
+    if (authStorage) {
+      try {
+        const authData = JSON.parse(authStorage);
+        const token = authData.state?.token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error('解析认证数据失败:', error);
+      }
     }
     return config;
   },
@@ -34,7 +42,7 @@ apiClient.interceptors.response.use(
     // 统一错误处理
     if (error.response?.status === 401) {
       // 处理未授权错误
-      localStorage.removeItem('token');
+      localStorage.removeItem('auth-storage');
       window.location.href = '/login';
     }
     return Promise.reject(error);

@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// 主应用组件
+import React from 'react';
+import { RouterProvider } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ConfigProvider, theme } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
+import { router } from '@/router';
+import 'dayjs/locale/zh-cn';
+import dayjs from 'dayjs';
 
-function App() {
-  const [count, setCount] = useState(0)
+// 设置dayjs为中文
+dayjs.locale('zh-cn');
 
+// 创建QueryClient实例
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1, // 失败重试次数
+      staleTime: 5 * 60 * 1000, // 5分钟内数据被认为是新鲜的
+      refetchOnWindowFocus: false // 窗口聚焦时不自动重新获取数据
+    },
+    mutations: {
+      retry: 1 // 变更操作失败重试次数
+    }
+  }
+});
+
+/**
+ * 主应用组件
+ * 配置全局状态管理、路由、国际化和主题
+ */
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <QueryClientProvider client={queryClient}>
+      <ConfigProvider
+        locale={zhCN}
+        theme={{
+          algorithm: theme.defaultAlgorithm,
+          token: {
+            colorPrimary: '#1890ff',
+            borderRadius: 6
+          }
+        }}
+      >
+        <RouterProvider router={router} />
+        
+        {/* 开发环境下显示React Query开发工具 */}
+        {process.env.NODE_ENV === 'development' && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </ConfigProvider>
+    </QueryClientProvider>
+  );
+};
 
-export default App
+export default App;

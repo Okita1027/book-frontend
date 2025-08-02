@@ -1,6 +1,6 @@
 // Publisher（出版社）相关API服务
-import { apiClient } from "./api";
-import type { Publisher, EditPublisherDTO } from "../types";
+import { apiClient } from "@/services/api";
+import type { Publisher, EditPublisherDTO } from "@/types";
 
 export const publisherService = {
   // 获取所有出版社

@@ -1,6 +1,6 @@
 // Fine（罚款）相关API服务
-import { apiClient } from './api';
-import type { FineVO } from '../types';
+import { apiClient } from '@/services/api';
+import type { FineVO } from '@/types';
 
 export const fineService = {
   // 获取所有罚款记录

@@ -1,6 +1,6 @@
 // Author（作者）相关API服务
-import { apiClient } from './api';
-import type { Author, EditAuthorDTO } from '../types';
+import { apiClient } from '@/services/api';
+import type { Author, EditAuthorDTO } from '@/types';
 
 export const authorService = {
   // 获取所有作者

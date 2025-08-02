@@ -1,7 +1,7 @@
 // User相关类型定义
 
-import type { Loan } from './Loan';
-import type { Fine } from './Fine';
+import type { Loan } from '@/types/Loan';
+import type { Fine } from '@/types/Fine';
 
 export enum UserRole {
   User = 0,
@@ -13,6 +13,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  phone?: string;
   passwordHash: string;
   role: UserRole;
   registrationDate: string;
@@ -21,8 +22,14 @@ export interface User {
   createdTime: string;
 }
 
+export interface UserLoginDTO {
+  email: string;
+  password: string;
+}
+
 export interface EditUserDTO {
   name: string;
   email: string;
-  passwordHash: string;
+  phone?: string;
+  passwordHash?: string;
 }

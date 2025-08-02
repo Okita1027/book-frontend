@@ -1,6 +1,6 @@
 // Loan（借阅记录）相关API服务
-import { apiClient } from './api';
-import type { LoanVO, EditLoanDTO } from '../types';
+import { apiClient } from '@/services/api';
+import type { LoanVO, EditLoanDTO } from '@/types';
 
 export const loanService = {
   // 获取所有借阅记录

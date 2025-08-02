@@ -1,6 +1,6 @@
 // Category（图书分类）相关API服务
-import { apiClient } from './api';
-import type { Category, EditCategoryDTO } from '../types';
+import { apiClient } from '@/services/api';
+import type { Category, EditCategoryDTO } from '@/types';
 
 export const categoryService = {
   // 获取所有分类

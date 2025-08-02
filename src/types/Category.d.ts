@@ -1,6 +1,6 @@
 // Category相关类型定义
 
-import type { Book } from './Book';
+import type { Book } from '@/types/Book';
 
 export interface Category {
   updatedTime: string;

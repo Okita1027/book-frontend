@@ -1,7 +1,7 @@
 // Fine相关类型定义
 
-import type { Loan } from './Loan';
-import type { User } from './User';
+import type { Loan } from '@/types/Loan';
+import type { User } from '@/types/User';
 
 export interface Fine {
   updatedTime: string;

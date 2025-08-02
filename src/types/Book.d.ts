@@ -1,9 +1,9 @@
 // Book相关类型定义
 
-import type { Author } from './Author';
-import type { Publisher } from './Publisher';
-import type { BookCategory } from './Category';
-import type { Loan } from './Loan';
+import type { Author } from '@/types/Author';
+import type { Publisher } from '@/types/Publisher';
+import type { BookCategory } from '@/types/Category';
+import type { Loan } from '@/types/Loan';
 
 export interface Book {
   updatedTime: string;

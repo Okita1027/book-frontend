@@ -1,8 +1,8 @@
 // Loan相关类型定义
 
-import type { Book } from './Book';
-import type { User } from './User';
-import type { Fine } from './Fine';
+import type { Book } from '@/types/Book';
+import type { User } from '@/types/User';
+import type { Fine } from '@/types/Fine';
 
 export interface Loan {
   updatedTime: string;

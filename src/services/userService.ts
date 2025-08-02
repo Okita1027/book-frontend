@@ -1,6 +1,6 @@
 // User（用户）相关API服务
-import { apiClient } from './api';
-import type { User, EditUserDTO, AuthResponseDTO } from '../types';
+import { apiClient } from '@/services/api';
+import type {User, EditUserDTO, AuthResponseDTO, UserLoginDTO} from '@/types';
 
 export const userService = {
   // 获取所有用户
@@ -34,9 +34,7 @@ export const userService = {
   },
 
   // 用户登录
-  login: (email: string, password: string): Promise<AuthResponseDTO> => {
-    return apiClient.post('/Users/login', null, {
-      params: { email, password }
-    });
+  login: (data: UserLoginDTO): Promise<AuthResponseDTO> => {
+    return apiClient.post('/Users/login', data);
   },
 };
