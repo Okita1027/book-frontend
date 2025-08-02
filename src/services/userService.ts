@@ -1,4 +1,4 @@
-// User相关API服务
+// User（用户）相关API服务
 import { apiClient } from './api';
 import type { User, EditUserDTO, AuthResponseDTO } from '../types';
 

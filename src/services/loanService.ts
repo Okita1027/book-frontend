@@ -1,4 +1,4 @@
-// Loan相关API服务
+// Loan（借阅记录）相关API服务
 import { apiClient } from './api';
 import type { LoanVO, EditLoanDTO } from '../types';
 

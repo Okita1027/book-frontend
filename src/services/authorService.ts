@@ -1,4 +1,4 @@
-// Author相关API服务
+// Author（作者）相关API服务
 import { apiClient } from './api';
 import type { Author, EditAuthorDTO } from '../types';
 

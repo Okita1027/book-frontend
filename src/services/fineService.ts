@@ -1,4 +1,4 @@
-// Fine相关API服务
+// Fine（罚款）相关API服务
 import { apiClient } from './api';
 import type { FineVO } from '../types';
 

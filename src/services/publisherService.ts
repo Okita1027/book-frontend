@@ -1,11 +1,11 @@
-// Publisher相关API服务
-import { apiClient } from './api';
-import type { Publisher, EditPublisherDTO } from '../types';
+// Publisher（出版社）相关API服务
+import { apiClient } from "./api";
+import type { Publisher, EditPublisherDTO } from "../types";
 
 export const publisherService = {
   // 获取所有出版社
   getAll: (): Promise<Publisher[]> => {
-    return apiClient.get('/Publishers');
+    return apiClient.get("/Publishers");
   },
 
   // 根据ID获取出版社
@@ -15,7 +15,7 @@ export const publisherService = {
 
   // 创建出版社
   create: (data: EditPublisherDTO): Promise<void> => {
-    return apiClient.post('/Publishers', data);
+    return apiClient.post("/Publishers", data);
   },
 
   // 更新出版社
@@ -30,6 +30,6 @@ export const publisherService = {
 
   // 批量删除出版社
   batchDelete: (ids: number[]): Promise<void> => {
-    return apiClient.delete('/Publishers', { data: ids });
+    return apiClient.delete("/Publishers", { data: ids });
   },
 };

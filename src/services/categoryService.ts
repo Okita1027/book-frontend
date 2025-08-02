@@ -1,4 +1,4 @@
-// Category相关API服务
+// Category（图书分类）相关API服务
 import { apiClient } from './api';
 import type { Category, EditCategoryDTO } from '../types';
 

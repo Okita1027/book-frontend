@@ -1,4 +1,4 @@
-// Book相关API服务
+// Book（图书）相关API服务
 import { apiClient } from './api';
 import type { BookVO, EditBookDTO } from '../types';
 
