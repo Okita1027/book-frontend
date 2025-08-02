@@ -4,7 +4,7 @@ import type { Loan } from '@/types/Loan';
 import type { Fine } from '@/types/Fine';
 
 export enum UserRole {
-  User = 0,
+  Member = 0,
   Admin = 1
 }
 
