@@ -1,7 +1,7 @@
 // 认证状态管理
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { AuthResponseDTO, UserRole } from '@/types';
+import {create} from 'zustand';
+import {persist} from 'zustand/middleware';
+import type {AuthResponseDTO} from '@/types';
 
 // 认证状态接口
 interface AuthState {

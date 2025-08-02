@@ -1,20 +1,12 @@
 // 登录页面
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  Form,
-  Input,
-  Button,
-  Card,
-  Typography,
-  message,
-  Space
-} from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useMutation } from '@tanstack/react-query';
-import { userService } from '@/services';
-import { useAuthStore } from '@/store';
-import type { AuthResponseDTO } from '@/types';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {Button, Card, Form, Input, message, Space, Typography} from 'antd';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {useMutation} from '@tanstack/react-query';
+import {userService} from '@/services';
+import {useAuthStore} from '@/store';
+import type {AuthResponseDTO} from '@/types';
 
 const { Title, Text } = Typography;
 

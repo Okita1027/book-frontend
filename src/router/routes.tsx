@@ -1,7 +1,7 @@
 // 路由配置
-import React, { lazy } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { Layout, MainLayout, AdminLayout, AdminRoute } from '@/components';
+import {lazy} from 'react';
+import {createBrowserRouter, Navigate} from 'react-router-dom';
+import {AdminLayout, AdminRoute, MainLayout} from '@/components';
 
 // 页面组件懒加载
 const Login = lazy(() => import('@/pages/Login'));

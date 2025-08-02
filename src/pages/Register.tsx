@@ -1,27 +1,10 @@
 // 用户注册页面
 import React from 'react';
-import {
-  Card,
-  Form,
-  Input,
-  Button,
-  Typography,
-  message,
-  Row,
-  Col,
-  Space,
-  Divider
-} from 'antd';
-import {
-  UserOutlined,
-  LockOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  UserAddOutlined
-} from '@ant-design/icons';
-import { useMutation } from '@tanstack/react-query';
-import { useNavigate, Link } from 'react-router-dom';
-import { userService } from '@/services';
+import {Button, Card, Divider, Form, Input, message, Space, Typography} from 'antd';
+import {LockOutlined, MailOutlined, PhoneOutlined, UserAddOutlined, UserOutlined} from '@ant-design/icons';
+import {useMutation} from '@tanstack/react-query';
+import {Link, useNavigate} from 'react-router-dom';
+import {userService} from '@/services';
 
 const { Title, Text } = Typography;
 

@@ -1,17 +1,10 @@
 // 主布局组件
 import React from 'react';
-import {Layout, Menu, Button, Space, Avatar, Dropdown, Typography, message} from 'antd';
-import {
-    HomeOutlined,
-    UserOutlined,
-    LoginOutlined,
-    LogoutOutlined,
-    SettingOutlined,
-    ControlOutlined
-} from '@ant-design/icons';
-import {Outlet, useNavigate, useLocation} from 'react-router-dom';
-import {useAuthStore} from '@/store';
 import type {MenuProps} from 'antd';
+import {Button, Layout, Menu, message, Space, Typography} from 'antd';
+import {ControlOutlined, HomeOutlined, LogoutOutlined} from '@ant-design/icons';
+import {Outlet, useLocation, useNavigate} from 'react-router-dom';
+import {useAuthStore} from '@/store';
 
 const {Header, Content} = Layout;
 const {Text} = Typography;
