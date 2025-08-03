@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import dayjs from "dayjs";
 import {
   Button,
@@ -34,18 +34,16 @@ const { Title, Text } = Typography;
  * 提供图书搜索和浏览功能
  */
 const BookBrowse: React.FC = () => {
-  // 搜索表单状态（用户输入）
-  const [searchForm, setSearchForm] = useState({
-    title: "",
-    isbn: "",
-    authorName: "",
-    categoryName: "",
-    publisherName: "",
-    publishedDateBegin: "",
-    publishedDateEnd: "",
-  });
+  // 各个搜索框中的值
+  const title = useRef<string>("");
+  const isbn = useRef<string>("");
+  const authorName = useRef<string>("");
+  const categoryName = useRef<string>("");
+  const publisherName = useRef<string>("");
+  const publishedDateBegin = useRef<string>("");
+  const publishedDateEnd = useRef<string>("");
 
-  // 实际搜索参数（触发查询）
+  // 实际搜索参数
   const [searchParams, setSearchParams] = useState<BookSearchParams>({});
 
   // 获取图书数据
@@ -58,33 +56,39 @@ const BookBrowse: React.FC = () => {
   const handleSearch = () => {
     // 过滤掉空值，只传递有值的参数
     const params: BookSearchParams = {};
-    if (searchForm.title?.trim()) params.title = searchForm.title.trim();
-    if (searchForm.isbn?.trim()) params.isbn = searchForm.isbn.trim();
-    if (searchForm.authorName?.trim())
-      params.authorName = searchForm.authorName.trim();
-    if (searchForm.categoryName?.trim())
-      params.categoryName = searchForm.categoryName.trim();
-    if (searchForm.publisherName?.trim())
-      params.publisherName = searchForm.publisherName.trim();
-    if (searchForm.publishedDateBegin?.trim())
-      params.publishedDateBegin = searchForm.publishedDateBegin.trim();
-    if (searchForm.publishedDateEnd?.trim())
-      params.publishedDateEnd = searchForm.publishedDateEnd.trim();
+    if (title.current?.trim()) params.title = title.current.trim();
+    if (isbn.current?.trim()) params.isbn = isbn.current.trim();
+    if (authorName.current?.trim())
+      params.authorName = authorName.current.trim();
+    if (categoryName.current?.trim())
+      params.categoryName = categoryName.current.trim();
+    if (publisherName.current?.trim())
+      params.publisherName = publisherName.current.trim();
+    if (publishedDateBegin.current?.trim())
+      params.publishedDateBegin = publishedDateBegin.current.trim();
+    if (publishedDateEnd.current?.trim())
+      params.publishedDateEnd = publishedDateEnd.current.trim();
 
     setSearchParams(params);
   };
 
+  // 用于强制重新渲染搜索表单的状态
+  const [resetKey, setResetKey] = useState(0);
+
   // 重置搜索
   const handleReset = () => {
-    setSearchForm({
-      title: "",
-      isbn: "",
-      authorName: "",
-      categoryName: "",
-      publisherName: "",
-      publishedDateBegin: "",
-      publishedDateEnd: "",
-    });
+    // 重置所有值
+    title.current = "";
+    isbn.current = "";
+    authorName.current = "";
+    categoryName.current = "";
+    publisherName.current = "";
+    publishedDateBegin.current = "";
+    publishedDateEnd.current = "";
+    
+    // 通过改变key值强制重新渲染搜索表单
+    setResetKey(prev => prev + 1);
+    
     setSearchParams({});
   };
 
@@ -102,7 +106,7 @@ const BookBrowse: React.FC = () => {
 
       {/* 搜索区域 */}
       <Card className="book-browse-search">
-        <div className="search-body">
+        <div className="search-body" key={resetKey}>
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12} md={8} lg={6}>
               <div className="search-label">
@@ -112,10 +116,11 @@ const BookBrowse: React.FC = () => {
                 placeholder="请输入图书名称"
                 allowClear
                 size="large"
-                value={searchForm.title}
-                onChange={(e) =>
-                  setSearchForm((prev) => ({ ...prev, title: e.target.value }))
-                }
+                defaultValue={title.current}
+                onChange={(e) => {
+                  title.current = e.target.value;
+                }}
+                onPressEnter={handleSearch}
                 className="search-input"
               />
             </Col>
@@ -127,13 +132,11 @@ const BookBrowse: React.FC = () => {
                 placeholder="请输入作者名称"
                 allowClear
                 size="large"
-                value={searchForm.authorName}
-                onChange={(e) =>
-                  setSearchForm((prev) => ({
-                    ...prev,
-                    authorName: e.target.value,
-                  }))
-                }
+                defaultValue={authorName.current}
+                onChange={(e) => {
+                  authorName.current = e.target.value;
+                }}
+                onPressEnter={handleSearch}
                 className="search-input"
               />
             </Col>
@@ -145,13 +148,11 @@ const BookBrowse: React.FC = () => {
                 placeholder="请输入类别名称"
                 allowClear
                 size="large"
-                value={searchForm.categoryName}
-                onChange={(e) =>
-                  setSearchForm((prev) => ({
-                    ...prev,
-                    categoryName: e.target.value,
-                  }))
-                }
+                defaultValue={categoryName.current}
+                onChange={(e) => {
+                  categoryName.current = e.target.value;
+                }}
+                onPressEnter={handleSearch}
                 className="search-input"
               />
             </Col>
@@ -163,13 +164,11 @@ const BookBrowse: React.FC = () => {
                 placeholder="请输入出版社名称"
                 allowClear
                 size="large"
-                value={searchForm.publisherName}
-                onChange={(e) =>
-                  setSearchForm((prev) => ({
-                    ...prev,
-                    publisherName: e.target.value,
-                  }))
-                }
+                defaultValue={publisherName.current}
+                onChange={(e) => {
+                  publisherName.current = e.target.value;
+                }}
+                onPressEnter={handleSearch}
                 className="search-input"
               />
             </Col>
@@ -181,11 +180,19 @@ const BookBrowse: React.FC = () => {
                 placeholder="请输入ISBN"
                 allowClear
                 size="large"
-                value={searchForm.isbn}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, ""); // 只保留数字
-                  setSearchForm((prev) => ({ ...prev, isbn: value }));
+                defaultValue={isbn.current}
+                // ISBN只允许输入数字,最长13位
+                maxLength={13}
+                onKeyDown={(e) => {
+                  // 阻止非数字字符输入
+                  if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Tab') {
+                    e.preventDefault();
+                  }
                 }}
+                onChange={(e) => {
+                  isbn.current = e.target.value;
+                }}
+                onPressEnter={handleSearch}
                 className="search-input"
               />
             </Col>
@@ -198,17 +205,14 @@ const BookBrowse: React.FC = () => {
                 placeholder="请选择开始日期"
                 allowClear
                 size="large"
-                value={
-                  searchForm.publishedDateBegin
-                    ? dayjs(searchForm.publishedDateBegin)
+                defaultValue={
+                  publishedDateBegin.current
+                    ? dayjs(publishedDateBegin.current)
                     : null
                 }
-                onChange={(date) =>
-                  setSearchForm((prev) => ({
-                    ...prev,
-                    publishedDateBegin: date ? date.format("YYYY-MM-DD") : "",
-                  }))
-                }
+                onChange={(date) => {
+                  publishedDateBegin.current = date ? date.format("YYYY-MM-DD") : "";
+                }}
                 className="search-datepicker"
               />
             </Col>
@@ -220,17 +224,14 @@ const BookBrowse: React.FC = () => {
                 placeholder="请选择结束日期"
                 allowClear
                 size="large"
-                value={
-                  searchForm.publishedDateEnd
-                    ? dayjs(searchForm.publishedDateEnd)
+                defaultValue={
+                  publishedDateEnd.current
+                    ? dayjs(publishedDateEnd.current)
                     : null
                 }
-                onChange={(date) =>
-                  setSearchForm((prev) => ({
-                    ...prev,
-                    publishedDateEnd: date ? date.format("YYYY-MM-DD") : "",
-                  }))
-                }
+                onChange={(date) => {
+                  publishedDateEnd.current = date ? date.format("YYYY-MM-DD") : "";
+                }}
                 className="search-datepicker"
               />
             </Col>
@@ -274,7 +275,7 @@ const BookBrowse: React.FC = () => {
             ) : (
               <Row gutter={[16, 16]}>
                 {books.map((book) => (
-                  <Col xs={24} sm={12} md={8} lg={6} key={book.id}>
+                  <Col xs={24} sm={12} md={8} lg={4} xl={4} key={book.id}>
                     <Card hoverable className="book-browse-card">
                       <div className="card-body">
                         <Title
