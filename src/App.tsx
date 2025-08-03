@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ConfigProvider, theme } from "antd";
 import zhCN from "antd/locale/zh_CN";
+import { Toaster } from "react-hot-toast";
 import { router } from "@/router";
 import "dayjs/locale/zh-cn";
 import dayjs from "dayjs";
@@ -46,6 +47,17 @@ const App: React.FC = () => {
           },
         }}
       >
+        {/* react-hot-toast 通知组件 */}
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: '#fff',
+              color: '#333',
+            },
+          }}
+        />
         
         {/* 路由配置 */}
         <RouterProvider router={router} />

@@ -1,6 +1,7 @@
 // 用户注册页面
 import React from 'react';
-import {Button, Card, Divider, Form, Input, message, Space, Typography} from 'antd';
+import {Button, Card, Divider, Form, Input, Space, Typography} from 'antd';
+import toast from 'react-hot-toast';
 import {LockOutlined, MailOutlined, UserAddOutlined, UserOutlined} from '@ant-design/icons';
 import {useMutation} from '@tanstack/react-query';
 import {Link, useNavigate} from 'react-router-dom';
@@ -29,11 +30,11 @@ const Register: React.FC = () => {
       return userService.register(data);
     },
     onSuccess: () => {
-      message.success('注册成功！请登录');
+      toast.success('注册成功！请登录');
       navigate('/login');
     },
     onError: (error: any) => {
-      message.error(error.response?.data?.message || '注册失败');
+      toast.error(error.response?.data?.message || '注册失败');
     }
   });
 

@@ -1,7 +1,8 @@
 // 主布局组件
 import React from "react";
 import type { MenuProps } from "antd";
-import { Button, Layout, Menu, Space, Typography, message } from "antd";
+import { Button, Layout, Menu, Space, Typography } from "antd";
+import toast from 'react-hot-toast';
 import {
   ControlOutlined,
   HomeOutlined,
@@ -70,6 +71,7 @@ const MainLayout: React.FC = () => {
   // 处理登出
   const handleLogout = () => {
     logout();
+    toast.success("已退出登录");
     navigate("/");
   };
 
@@ -92,14 +94,14 @@ const MainLayout: React.FC = () => {
     if (key === "/admin") {
       // 检查用户权限
       if (!isAuthenticated) {
-        message.warning("请先登录");
+        toast.error("请先登录");
         navigate("/login");
         return;
       }
 
       // 检查管理员权限
       if (user?.role !== "Admin") {
-        message.error("权限不足");
+        toast.error("权限不足");
         return;
       }
     }

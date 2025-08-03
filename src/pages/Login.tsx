@@ -1,7 +1,8 @@
 // 登录页面
 import React from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import {Button, Card, Form, Input, message, Space, Typography} from 'antd';
+import {Button, Card, Form, Input, Space, Typography} from 'antd';
+import toast from 'react-hot-toast';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {useMutation} from '@tanstack/react-query';
 import {userService} from '@/services';
@@ -24,9 +25,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuthStore();
-  const [form] = Form.useForm<LoginForm>();
-
-  // 获取重定向路径
+  const [form] = Form.useForm<LoginForm>();// 获取重定向路径
   const from = (location.state as any)?.from?.pathname || '/';
 
   // 登录mutation
@@ -35,13 +34,13 @@ const Login: React.FC = () => {
       userService.login({ email, password }),
     onSuccess: (data: AuthResponseDTO) => {
       console.log('登录成功，收到的数据:', data);
-      message.success('登录成功！');
+      toast.success('登录成功！');
       login(data);
       navigate(from, { replace: true });
     },
     onError: (error: any) => {
       console.error('登录失败:', error);
-      message.error(error.response?.data?.message || '登录失败，请检查用户名和密码');
+      toast.error(error.response?.data?.message || '登录失败，请检查用户名和密码');
     }
   });
 

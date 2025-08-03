@@ -1,7 +1,8 @@
 // 出版社管理页面
 import React, {useRef, useState} from 'react';
 import {type ActionType, type ProColumns, ProTable} from '@ant-design/pro-components';
-import {Button, Form, Input, message, Modal, Popconfirm} from 'antd';
+import {Button, Form, Input, Modal, Popconfirm} from 'antd';
+import toast from 'react-hot-toast';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons';
 import {publisherService} from '@/services';
 import type {Publisher} from '@/types';
@@ -99,15 +100,15 @@ const PublisherManagement: React.FC = () => {
             );
             const successCount = responses.filter(res => res.status === 200 || res.status === 204).length;
             if (successCount === selectedRowKeys.length) {
-                message.success(`批量删除成功，共删除 ${successCount} 个出版社`);
+                toast.success(`批量删除成功，共删除 ${successCount} 个出版社`);
             } else {
-                message.success(`批量删除完成，共处理 ${selectedRowKeys.length} 个出版社`);
+                toast.success(`批量删除完成，共处理 ${selectedRowKeys.length} 个出版社`);
             }
             setSelectedRowKeys([]);
             setSelectedRows([]);
             actionRef.current?.reload();
         } catch (error) {
-            message.error('批量删除失败' + error);
+            toast.error('批量删除失败' + error);
         }
     };
 
@@ -139,7 +140,7 @@ const PublisherManagement: React.FC = () => {
                 total: filteredData.length,
             };
         } catch (error) {
-            message.error('获取出版社列表失败' + error);
+            toast.error('获取出版社列表失败' + error);
             return {
                 data: [],
                 success: false,
@@ -169,13 +170,13 @@ const PublisherManagement: React.FC = () => {
         try {
             const response = await publisherService.delete(id);
             if (response.status === 200 || response.status === 204) {
-                message.success('删除成功');
+                toast.success('删除成功');
             } else {
-                message.success('删除操作已完成');
+                toast.success('删除操作已完成');
             }
             actionRef.current?.reload();
         } catch (error) {
-            message.error('删除失败');
+            toast.error('删除失败');
         }
     };
 
@@ -189,24 +190,24 @@ const PublisherManagement: React.FC = () => {
                 // 编辑
                 response = await publisherService.update(editingPublisher.id, values);
                 if (response.status === 200) {
-                    message.success('更新成功');
+                    toast.success('更新成功');
                 } else {
-                    message.success('更新操作已完成');
+                    toast.success('更新操作已完成');
                 }
             } else {
                 // 新增
                 response = await publisherService.create(values);
                 if (response.status === 201) {
-                    message.success('创建成功');
+                    toast.success('创建成功');
                 } else {
-                    message.success('创建操作已完成');
+                    toast.success('创建操作已完成');
                 }
             }
 
             setModalVisible(false);
             actionRef.current?.reload();
         } catch (error) {
-            message.error(editingPublisher ? '更新失败' : '创建失败');
+            toast.error(editingPublisher ? '更新失败' : '创建失败');
         }
     };
 

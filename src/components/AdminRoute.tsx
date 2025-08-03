@@ -1,7 +1,7 @@
 // 管理员路由保护组件
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { message } from "antd";
+import toast from 'react-hot-toast';
 import { useAuthStore } from "@/store";
 
 interface AdminRouteProps {
@@ -19,13 +19,13 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
 
   // 检查是否已登录
   if (!isAuthenticated) {
-    message.warning("请先登录");
+    toast.error("请先登录");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // 检查是否为管理员
   if (user?.role !== "Admin") {
-    message.error("权限不足");
+    toast.error("权限不足");
     return <Navigate to="/" replace />;
   }
 
