@@ -1,7 +1,7 @@
 // 主布局组件
 import React from "react";
 import type { MenuProps } from "antd";
-import { Button, Layout, Menu, message, Space, Typography } from "antd";
+import { Button, Layout, Menu, Space, Typography, message } from "antd";
 import {
   ControlOutlined,
   HomeOutlined,
@@ -17,6 +17,51 @@ const { Text } = Typography;
  * 主布局组件
  * 提供顶部导航栏和内容区域
  */
+// 用户操作区域组件
+const UserActions: React.FC<{
+  isAuthenticated: boolean;
+  user: any;
+  onLogin: () => void;
+  onRegister: () => void;
+  onLogout: () => void;
+}> = ({ isAuthenticated, user, onLogin, onRegister, onLogout }) => {
+  if (!isAuthenticated) {
+    return (
+      <Space>
+        <Button
+          type="default"
+          onClick={onLogin}
+          style={{ borderRadius: 6 }}
+        >
+          登录
+        </Button>
+        <Button
+          type="primary"
+          onClick={onRegister}
+          style={{ borderRadius: 6 }}
+        >
+          注册
+        </Button>
+      </Space>
+    );
+  }
+
+  return (
+    <Space size="large">
+      <Text style={{ color: "#666" }}>欢迎，{user?.name}</Text>
+      <Button
+        type="primary"
+        icon={<LogoutOutlined />}
+        onClick={onLogout}
+        style={{ borderRadius: 6 }}
+      >
+        退出登录
+      </Button>
+    </Space>
+  );
+};
+
+// 在MainLayout中使用
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,7 +99,7 @@ const MainLayout: React.FC = () => {
 
       // 检查管理员权限
       if (user?.role !== "Admin") {
-        message.error("权限不足！只有管理员才能访问后台管理系统。");
+        message.error("权限不足");
         return;
       }
     }
@@ -62,7 +107,7 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <Layout style={{ height: "100vh" }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Header
         style={{
           position: "fixed",
@@ -101,41 +146,14 @@ const MainLayout: React.FC = () => {
         </div>
 
         {/* 右侧：用户操作区域 */}
-        <div>
-          {!isAuthenticated ? (
-            // 未登录状态
-            <Space>
-              <Button
-                type="default"
-                onClick={() => navigate("/login")}
-                style={{ borderRadius: 6 }}
-              >
-                登录
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => navigate("/register")}
-                style={{ borderRadius: 6 }}
-              >
-                注册
-              </Button>
-            </Space>
-          ) : (
-            // 已登录状态
-            <Space size="large">
-              <Text style={{ color: "#666" }}>欢迎，{user?.name}</Text>
-
-              {/* 已登录用户：显示退出登录按钮 */}
-              <Button
-                type="primary"
-                icon={<LogoutOutlined />}
-                onClick={handleLogout}
-                style={{ borderRadius: 6 }}
-              >
-                退出登录
-              </Button>
-            </Space>
-          )}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <UserActions
+            isAuthenticated={isAuthenticated}
+            user={user}
+            onLogin={() => navigate("/login")}
+            onRegister={() => navigate("/register")}
+            onLogout={handleLogout}
+          />
         </div>
       </Header>
 
