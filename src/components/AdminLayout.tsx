@@ -51,6 +51,7 @@ const AdminLayout: React.FC = () => {
     }
   ];
 
+
   // 处理菜单点击
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
@@ -68,6 +69,7 @@ const AdminLayout: React.FC = () => {
         </div>
         <Menu
           mode="inline"
+          theme="light"
           selectedKeys={[location.pathname]}
           items={siderMenuItems}
           onClick={handleMenuClick}
@@ -76,6 +78,7 @@ const AdminLayout: React.FC = () => {
       </Sider>
       
       <Content className="admin-content">
+        {/* 渲染二级路由 */}
         <Outlet />
       </Content>
     </Layout>

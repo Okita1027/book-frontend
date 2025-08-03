@@ -1,7 +1,7 @@
 // 认证状态管理
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
-import type {AuthResponseDTO} from '@/types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { AuthResponseDTO } from "@/types";
 
 // 认证状态接口
 interface AuthState {
@@ -13,7 +13,7 @@ interface AuthState {
     expiresAt: string;
   } | null;
   isAuthenticated: boolean;
-  
+
   // 操作方法
   login: (authData: AuthResponseDTO) => void;
   logout: () => void;
@@ -33,20 +33,20 @@ export const useAuthStore = create<AuthState>()(
 
       // 登录方法
       login: (authData: AuthResponseDTO) => {
-        console.log('authStore.login 收到的数据:', authData);
+        console.log("authStore.login 收到的数据:", authData);
         const { token, name, role, expiresAt } = authData;
-        
+
         const newState = {
           token: token || null,
           user: {
-            name: name || '',
-            role: role || '',
-            expiresAt: expiresAt
+            name: name || "",
+            role: role || "",
+            expiresAt: expiresAt,
           },
-          isAuthenticated: true
+          isAuthenticated: true,
         };
-        
-        console.log('authStore.login 设置的状态:', newState);
+
+        console.log("authStore.login 设置的状态:", newState);
         set(newState);
       },
 
@@ -55,34 +55,44 @@ export const useAuthStore = create<AuthState>()(
         set({
           token: null,
           user: null,
-          isAuthenticated: false
+          isAuthenticated: false,
         });
       },
 
       // 检查token是否过期
       checkTokenExpiry: () => {
         const { user } = get();
-        console.log('checkTokenExpiry - user:', user);
-        
+        console.log("checkTokenExpiry - user:", user);
+
         if (!user || !user.expiresAt) {
-          console.log('checkTokenExpiry - 没有用户信息或过期时间');
+          console.log("checkTokenExpiry - 没有用户信息或过期时间");
           return false;
         }
 
         const expiryTime = new Date(user.expiresAt).getTime();
         const currentTime = new Date().getTime();
-        
-        console.log('checkTokenExpiry - 过期时间:', user.expiresAt, '转换后:', expiryTime);
-        console.log('checkTokenExpiry - 当前时间:', new Date().toISOString(), '转换后:', currentTime);
-        console.log('checkTokenExpiry - 是否过期:', currentTime >= expiryTime);
-        
+
+        console.log(
+          "checkTokenExpiry - 过期时间:",
+          user.expiresAt,
+          "转换后:",
+          expiryTime
+        );
+        console.log(
+          "checkTokenExpiry - 当前时间:",
+          new Date().toISOString(),
+          "转换后:",
+          currentTime
+        );
+        console.log("checkTokenExpiry - 是否过期:", currentTime >= expiryTime);
+
         if (currentTime >= expiryTime) {
           // token已过期，清除数据
-          console.log('checkTokenExpiry - token已过期，执行登出');
+          console.log("checkTokenExpiry - token已过期，执行登出");
           get().logout();
           return false;
         }
-        
+
         return true;
       },
 
@@ -92,7 +102,7 @@ export const useAuthStore = create<AuthState>()(
         if (!isAuthenticated || !user) {
           return false;
         }
-        return user.role === 'Admin';
+        return user.role === "Admin";
       },
 
       // 判断是否为普通用户
@@ -101,17 +111,17 @@ export const useAuthStore = create<AuthState>()(
         if (!isAuthenticated || !user) {
           return false;
         }
-        return user.role === 'User';
-      }
+        return user.role === "Member";
+      },
     }),
     {
-      name: 'auth-storage', // 本地存储的key
+      name: "auth-storage", // 本地存储的key
       // 只持久化必要的状态
       partialize: (state) => ({
         token: state.token,
         user: state.user,
-        isAuthenticated: state.isAuthenticated
-      })
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

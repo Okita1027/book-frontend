@@ -120,20 +120,7 @@ const Login: React.FC = () => {
               </Form.Item>
             </Form>
 
-            {/* 演示账号信息 */}
-            <div className="demo-accounts">
-              <Text type="secondary">
-                演示账号：
-              </Text>
-              <br />
-              <Text code>
-                管理员: root@163.com / 123456
-              </Text>
-              <br />
-              <Text code>
-                用户: zhangsan@mail.com / 123456
-              </Text>
-            </div>
+
           </Space>
         </div>
       </Card>

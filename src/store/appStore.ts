@@ -1,12 +1,12 @@
 // 应用全局状态管理
-import { create } from 'zustand';
+import { create } from "zustand";
 
 // 应用状态接口
 interface AppState {
   // UI状态
   loading: boolean;
   sidebarCollapsed: boolean;
-  
+
   // 操作方法
   setLoading: (loading: boolean) => void;
   toggleSidebar: () => void;
@@ -32,5 +32,5 @@ export const useAppStore = create<AppState>((set) => ({
   // 设置侧边栏折叠状态
   setSidebarCollapsed: (collapsed: boolean) => {
     set({ sidebarCollapsed: collapsed });
-  }
+  },
 }));

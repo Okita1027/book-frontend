@@ -1,7 +1,7 @@
 // 用户注册页面
 import React from 'react';
 import {Button, Card, Divider, Form, Input, message, Space, Typography} from 'antd';
-import {LockOutlined, MailOutlined, PhoneOutlined, UserAddOutlined, UserOutlined} from '@ant-design/icons';
+import {LockOutlined, MailOutlined, UserAddOutlined, UserOutlined} from '@ant-design/icons';
 import {useMutation} from '@tanstack/react-query';
 import {Link, useNavigate} from 'react-router-dom';
 import {userService} from '@/services';
@@ -14,7 +14,6 @@ interface RegisterFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  phone?: string;
 }
 
 /**
@@ -97,21 +96,6 @@ const Register: React.FC = () => {
               <Input 
                 prefix={<MailOutlined />}
                 placeholder="请输入邮箱"
-                className="form-input"
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="phone"
-              label="手机号（可选）"
-              rules={[
-                { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' }
-              ]}
-              className="form-item"
-            >
-              <Input 
-                prefix={<PhoneOutlined />}
-                placeholder="请输入手机号"
                 className="form-input"
               />
             </Form.Item>
