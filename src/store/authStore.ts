@@ -116,8 +116,8 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage", // 本地存储的key
-      // 只持久化必要的状态
+      name: "auth-storage", // 本地存储的key名称
+      // 持久化登录状态
       partialize: (state) => ({
         token: state.token,
         user: state.user,
