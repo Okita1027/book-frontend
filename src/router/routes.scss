@@ -1,0 +1,14 @@
+// 路由懒加载样式
+.route-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  gap: 16px;
+
+  .loading-text {
+    color: #666;
+    font-size: 14px;
+  }
+}

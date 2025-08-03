@@ -1,0 +1,119 @@
+// 图书浏览页面样式
+// 变量定义
+$primary-color: #1890ff;
+$background-color: #f5f5f5;
+$white-color: #fff;
+$border-radius: 8px;
+$border-radius-large: 12px;
+$padding-base: 16px;
+$padding-large: 24px;
+$padding-xl: 32px;
+$shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$transition: all 0.3s ease;
+
+.book-browse {
+  padding: $padding-large;
+  background-color: $background-color;
+  min-height: 100vh;
+  width: 100%;
+
+  // 页面标题区域
+  &-header {
+    text-align: center;
+    margin-bottom: $padding-xl;
+
+    .title {
+      color: $primary-color;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+    }
+  }
+
+  // 搜索区域
+  &-search {
+    margin-bottom: $padding-large;
+    border-radius: $border-radius-large;
+    box-shadow: $shadow;
+
+    .search-body {
+      padding: $padding-large;
+    }
+
+    .search-label {
+      margin-bottom: 8px;
+    }
+
+    .search-input {
+      border-radius: $border-radius;
+    }
+
+    .search-select {
+      border-radius: $border-radius;
+      width: 100%;
+    }
+
+    .search-datepicker {
+      border-radius: $border-radius;
+      width: 100%;
+    }
+
+    .search-button {
+      border-radius: $border-radius;
+    }
+  }
+
+  // 图书列表区域
+  &-list {
+    border-radius: $border-radius-large;
+    box-shadow: $shadow;
+
+    .list-body {
+      padding: $padding-large;
+    }
+
+    .empty-state {
+      margin: 40px 0;
+    }
+  }
+
+  // 图书卡片
+  &-card {
+    height: 100%;
+    border-radius: $border-radius;
+    transition: $transition;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-body {
+      padding: $padding-base;
+    }
+
+    .card-title {
+      margin-bottom: 8px;
+    }
+
+    .card-info {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .card-date {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .card-tags {
+      margin-bottom: 8px;
+    }
+
+    .card-isbn {
+      font-size: 12px;
+    }
+  }
+}

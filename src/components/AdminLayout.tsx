@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import type { MenuProps } from 'antd';
-import './AdminLayout.css';
+import './AdminLayout.scss';
 
 const { Sider, Content } = Layout;
 

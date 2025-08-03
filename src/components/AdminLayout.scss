@@ -1,0 +1,65 @@
+// 后台管理布局样式
+// 变量定义
+$primary-color: #1890ff;
+$background-color: #f5f5f5;
+$white-color: #fff;
+$border-color: #f0f0f0;
+$hover-color: #e6f7ff;
+$text-color: #262626;
+$shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+$header-height: 64px;
+
+.admin-layout {
+  min-height: calc(100vh - #{$header-height});
+  background: $background-color;
+}
+
+.admin-sider {
+  background: $white-color;
+  border-right: 1px solid $border-color;
+  box-shadow: $shadow;
+
+  &-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid $border-color;
+    text-align: center;
+
+    h3 {
+      margin: 0;
+      color: $primary-color;
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+}
+
+.admin-menu {
+  border-right: none;
+  padding: 8px 0;
+
+  .ant-menu-item {
+    margin: 4px 8px;
+    border-radius: 6px;
+    height: 40px;
+    line-height: 40px;
+
+    &:hover {
+      background-color: $hover-color;
+    }
+
+    &-selected {
+      background-color: $primary-color;
+      color: $white-color;
+
+      .anticon {
+        color: $white-color;
+      }
+    }
+  }
+}
+
+.admin-content {
+  padding: 24px;
+  background: $background-color;
+  min-height: calc(100vh - #{$header-height});
+}

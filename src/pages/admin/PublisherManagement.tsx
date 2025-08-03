@@ -5,7 +5,7 @@ import {Button, Form, Input, message, Modal, Popconfirm} from 'antd';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons';
 import {publisherService} from '@/services';
 import type {Publisher} from '@/types';
-import './PublisherManagement.css';
+import './PublisherManagement.scss';
 
 const PublisherManagement: React.FC = () => {
     const actionRef = useRef<ActionType>();

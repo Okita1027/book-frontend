@@ -7,6 +7,7 @@ import {useMutation} from '@tanstack/react-query';
 import {userService} from '@/services';
 import {useAuthStore} from '@/store';
 import type {AuthResponseDTO} from '@/types';
+import './Login.scss';
 
 const { Title, Text } = Typography;
 
@@ -50,99 +51,91 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div 
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f5f5f5',
-        padding: '20px'
-      }}
-    >
-      <Card 
-        style={{ 
-          width: '100%',
-          maxWidth: 400,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-        }}
-      >
-        <Space 
-          direction="vertical" 
-          size="large" 
-          style={{ width: '100%', textAlign: 'center' }}
-        >
-          {/* 标题 */}
-          <div>
-            <Title level={2} style={{ marginBottom: 8 }}>
-              图书管理系统
-            </Title>
-            <Text type="secondary">
-              请输入您的账号和密码登录
-            </Text>
-          </div>
-
-          {/* 登录表单 */}
-          <Form
-            form={form}
-            name="login"
-            onFinish={handleSubmit}
-            autoComplete="off"
-            size="large"
+    <div className="login-container">
+      <Card className="login-card">
+        <div className="card-body">
+          <Space 
+            direction="vertical" 
+            size="large" 
+            style={{ width: '100%' }}
           >
-            <Form.Item
-              name="email"
-              rules={[
-                { required: true, message: '请输入邮箱地址' },
-                { type: 'email', message: '请输入有效的邮箱地址' }
-              ]}
-            >
-              <Input 
-                prefix={<UserOutlined />} 
-                placeholder="邮箱地址" 
-              />
-            </Form.Item>
+            {/* 标题 */}
+            <div className="login-title">
+              <Title level={2}>
+                图书管理系统
+              </Title>
+              <Text type="secondary">
+                请输入您的账号和密码登录
+              </Text>
+            </div>
 
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: '请输入密码' },
-                { min: 6, message: '密码至少6位字符' }
-              ]}
+            {/* 登录表单 */}
+            <Form
+              form={form}
+              name="login"
+              onFinish={handleSubmit}
+              autoComplete="off"
+              size="large"
+              className="login-form"
             >
-              <Input.Password 
-                prefix={<LockOutlined />} 
-                placeholder="密码" 
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
-                loading={loginMutation.isPending}
-                style={{ width: '100%' }}
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: '请输入邮箱地址' },
+                  { type: 'email', message: '请输入有效的邮箱地址' }
+                ]}
+                className="form-item"
               >
-                {loginMutation.isPending ? '登录中...' : '登录'}
-              </Button>
-            </Form.Item>
-          </Form>
+                <Input 
+                  prefix={<UserOutlined />} 
+                  placeholder="邮箱地址"
+                  className="form-input"
+                />
+              </Form.Item>
 
-          {/* 演示账号信息 */}
-          <div style={{ textAlign: 'left' }}>
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              演示账号：
-            </Text>
-            <br />
-            <Text code style={{ fontSize: '12px' }}>
-              管理员: root@163.com / 123456
-            </Text>
-            <br />
-            <Text code style={{ fontSize: '12px' }}>
-              用户: zhangsan@mail.com / 123456
-            </Text>
-          </div>
-        </Space>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: '请输入密码' },
+                  { min: 6, message: '密码至少6位字符' }
+                ]}
+                className="form-item"
+              >
+                <Input.Password 
+                  prefix={<LockOutlined />} 
+                  placeholder="密码"
+                  className="form-input"
+                />
+              </Form.Item>
+
+              <Form.Item className="form-item">
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  loading={loginMutation.isPending}
+                  className="login-button"
+                >
+                  {loginMutation.isPending ? '登录中...' : '登录'}
+                </Button>
+              </Form.Item>
+            </Form>
+
+            {/* 演示账号信息 */}
+            <div className="demo-accounts">
+              <Text type="secondary">
+                演示账号：
+              </Text>
+              <br />
+              <Text code>
+                管理员: root@163.com / 123456
+              </Text>
+              <br />
+              <Text code>
+                用户: zhangsan@mail.com / 123456
+              </Text>
+            </div>
+          </Space>
+        </div>
       </Card>
     </div>
   );

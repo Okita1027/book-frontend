@@ -1,0 +1,94 @@
+// 注册页面样式变量
+$primary-color: #1890ff;
+$border-radius: 8px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+$transition: all 0.3s ease;
+$padding-base: 16px;
+$margin-base: 16px;
+
+// 注册页面容器
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+// 注册卡片
+.register-card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  box-shadow: $box-shadow;
+  
+  .card-body {
+    padding: 32px;
+  }
+}
+
+// 注册标题
+.register-title {
+  text-align: center;
+  margin-bottom: 32px;
+  color: $primary-color;
+  
+  .register-icon {
+    font-size: 48px;
+    color: $primary-color;
+    margin-bottom: 16px;
+    display: block;
+  }
+}
+
+// 注册表单
+.register-form {
+  .form-item {
+    margin-bottom: 24px;
+  }
+  
+  .form-input {
+    border-radius: $border-radius;
+    height: 48px;
+  }
+  
+  .register-button {
+    width: 100%;
+    height: 48px;
+    border-radius: $border-radius;
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+// 分割线
+.divider {
+  margin: 24px 0;
+}
+
+// 登录链接
+.login-link {
+  text-align: center;
+  
+  .link-button {
+    padding: 0;
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .register-container {
+    padding: 16px;
+  }
+  
+  .register-card {
+    .card-body {
+      padding: 24px;
+    }
+  }
+  
+  .register-title {
+    margin-bottom: 24px;
+  }
+}

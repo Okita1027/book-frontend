@@ -27,6 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { BookSearchParams } from "@/services";
 import { bookService, categoryService, publisherService } from "@/services";
 import type { BookVO } from "@/types";
+import './BookBrowse.scss';
 
 const { Title, Text } = Typography;
 
@@ -109,36 +110,23 @@ const BookBrowse: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        padding: "24px",
-        backgroundColor: "#f5f5f5",
-        minHeight: "100vh",
-        width: "100%",
-      }}
-    >
+    <div className="book-browse">
       {/* 页面标题 */}
-      <div style={{ textAlign: "center", marginBottom: 32 }}>
-        <Title level={1} style={{ color: "#1890ff", marginBottom: 8 }}>
+      <div className="book-browse-header">
+        <Title level={1} className="title">
           <BookOutlined /> 图书阅览系统
         </Title>
-        <Text type="secondary" style={{ fontSize: 16 }}>
+        <Text type="secondary" className="subtitle">
           发现知识的海洋，探索阅读的乐趣
         </Text>
       </div>
 
       {/* 搜索区域 */}
-      <Card
-        style={{
-          marginBottom: 24,
-          borderRadius: 12,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        }}
-        styles={{ body: { padding: "24px" } }}
-      >
+      <Card className="book-browse-search">
+        <div className="search-body">
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>图书名称</Text>
             </div>
             <Input
@@ -149,11 +137,11 @@ const BookBrowse: React.FC = () => {
               onChange={(e) =>
                 setSearchForm((prev) => ({ ...prev, title: e.target.value }))
               }
-              style={{ borderRadius: 8 }}
+              className="search-input"
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>作者</Text>
             </div>
             <Input
@@ -167,11 +155,11 @@ const BookBrowse: React.FC = () => {
                   authorName: e.target.value,
                 }))
               }
-              style={{ borderRadius: 8 }}
+              className="search-input"
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>ISBN</Text>
             </div>
             <Input
@@ -183,11 +171,11 @@ const BookBrowse: React.FC = () => {
                 const value = e.target.value.replace(/\D/g, ""); // 只保留数字
                 setSearchForm((prev) => ({ ...prev, isbn: value }));
               }}
-              style={{ borderRadius: 8 }}
+              className="search-input"
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>类别</Text>
             </div>
             <Select
@@ -198,7 +186,7 @@ const BookBrowse: React.FC = () => {
               onChange={(value) =>
                 setSearchForm((prev) => ({ ...prev, categoryId: value }))
               }
-              style={{ borderRadius: 8, width: "100%" }}
+              className="search-select"
               options={categories.map((category) => ({
                 label: category.name,
                 value: category.id,
@@ -206,7 +194,7 @@ const BookBrowse: React.FC = () => {
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>出版社</Text>
             </div>
             <Select
@@ -217,7 +205,7 @@ const BookBrowse: React.FC = () => {
               onChange={(value) =>
                 setSearchForm((prev) => ({ ...prev, publisherId: value }))
               }
-              style={{ borderRadius: 8, width: "100%" }}
+              className="search-select"
               options={publishers.map((publisher) => ({
                 label: publisher.name,
                 value: publisher.id,
@@ -225,7 +213,7 @@ const BookBrowse: React.FC = () => {
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>出版日期开始</Text>
             </div>
             <DatePicker
@@ -243,11 +231,11 @@ const BookBrowse: React.FC = () => {
                   publishedDateBegin: date ? date.format("YYYY-MM-DD") : "",
                 }))
               }
-              style={{ borderRadius: 8, width: "100%" }}
+              className="search-datepicker"
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>出版日期结束</Text>
             </div>
             <DatePicker
@@ -265,11 +253,11 @@ const BookBrowse: React.FC = () => {
                   publishedDateEnd: date ? date.format("YYYY-MM-DD") : "",
                 }))
               }
-              style={{ borderRadius: 8, width: "100%" }}
+              className="search-datepicker"
             />
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ marginBottom: 8 }}>
+            <div className="search-label">
               <Text strong>操作</Text>
             </div>
             <Space>
@@ -278,7 +266,7 @@ const BookBrowse: React.FC = () => {
                 icon={<SearchOutlined />}
                 size="large"
                 onClick={handleSearch}
-                style={{ borderRadius: 8 }}
+                className="search-button"
               >
                 搜索
               </Button>
@@ -286,67 +274,63 @@ const BookBrowse: React.FC = () => {
                 icon={<ReloadOutlined />}
                 size="large"
                 onClick={handleReset}
-                style={{ borderRadius: 8 }}
+                className="search-button"
               >
                 重置
               </Button>
             </Space>
           </Col>
         </Row>
+        </div>
       </Card>
 
       {/* 图书展示区域 */}
       <Card
         title={`图书列表 (共 ${books.length} 本)`}
-        style={{ borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-        styles={{ body: { padding: "24px" } }}
+        className="book-browse-list"
       >
-        <Spin spinning={isLoading}>
-          {books.length === 0 ? (
-            <Empty description="暂无图书数据" style={{ margin: "40px 0" }} />
-          ) : (
+        <div className="list-body">
+          <Spin spinning={isLoading}>
+            {books.length === 0 ? (
+              <Empty description="暂无图书数据" className="empty-state" />
+            ) : (
             <Row gutter={[16, 16]}>
               {books.map((book) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={book.id}>
                   <Card
                     hoverable
-                    style={{
-                      height: "100%",
-                      borderRadius: 8,
-                      transition: "all 0.3s ease",
-                    }}
-                    styles={{ body: { padding: "16px" } }}
+                    className="book-browse-card"
                   >
-                    <div>
+                    <div className="card-body">
                       <Title
                         level={5}
                         ellipsis={{ rows: 2 }}
-                        style={{ marginBottom: 8 }}
+                        className="card-title"
                       >
                         {book.title}
                       </Title>
                       <Text
                         type="secondary"
-                        style={{ display: "block", marginBottom: 4 }}
+                        className="card-info"
                       >
                         <UserOutlined /> {book.authorName || "未知作者"}
                       </Text>
                       <Text
                         type="secondary"
-                        style={{ display: "block", marginBottom: 4 }}
+                        className="card-info"
                       >
                         <HomeOutlined /> {book.publisherName || "未知出版社"}
                       </Text>
                       <Text
                         type="secondary"
-                        style={{ display: "block", marginBottom: 8 }}
+                        className="card-date"
                       >
                         <CalendarOutlined />{" "}
                         {book.publishedDate
                           ? dayjs(book.publishedDate).format("YYYY-MM-DD")
                           : "未知日期"}
                       </Text>
-                      <div style={{ marginBottom: 8 }}>
+                      <div className="card-tags">
                         {book.categoryNames?.map((categoryName, index) => (
                           <Tag key={index} color="blue">
                             {categoryName}
@@ -356,7 +340,7 @@ const BookBrowse: React.FC = () => {
                           可借: {book.available}/{book.stock}
                         </Tag>
                       </div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>
+                      <Text type="secondary" className="card-isbn">
                         ISBN: {book.isbn || "暂无"}
                       </Text>
                     </div>
@@ -364,8 +348,9 @@ const BookBrowse: React.FC = () => {
                 </Col>
               ))}
             </Row>
-          )}
-        </Spin>
+            )}
+          </Spin>
+        </div>
       </Card>
     </div>
   );
