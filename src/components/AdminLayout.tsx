@@ -1,15 +1,18 @@
 // 后台管理布局组件
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Button } from 'antd';
 import {
   BookOutlined,
   TagOutlined,
   UserOutlined,
   HomeOutlined,
-  TeamOutlined
+  TeamOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined
 } from '@ant-design/icons';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import type { MenuProps } from 'antd';
+import { useAppStore } from '../store';
 import './AdminLayout.scss';
 
 const { Sider, Content } = Layout;
@@ -20,7 +23,7 @@ const { Sider, Content } = Layout;
  */
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { sidebarCollapsed, toggleSidebar } = useAppStore();
 
   // 左侧菜单项
   const siderMenuItems: MenuProps['items'] = [
@@ -61,16 +64,25 @@ const AdminLayout: React.FC = () => {
     <Layout className="admin-layout">
       <Sider 
         width={240}
+        collapsedWidth={80} // 折叠时的宽度
+        collapsed={sidebarCollapsed}  // 绑定折叠状态
         className="admin-sider"
         theme="light"
+        trigger={null}  // 禁用默认的折叠按钮
       >
         <div className="admin-sider-header">
-          <h3>后台管理</h3>
+          {/* 折叠时隐藏标题 */}
+          {!sidebarCollapsed && <h3>后台管理</h3>}
+          <Button
+            type="text"
+            icon={sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={toggleSidebar} // 切换折叠状态
+            className="collapse-btn"
+          />
         </div>
         <Menu
           mode="inline"
           theme="light"
-          selectedKeys={[location.pathname]}
           items={siderMenuItems}
           onClick={handleMenuClick}
           className="admin-menu"

@@ -1,5 +1,5 @@
 // 主应用组件
-import React from "react";
+import React, { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -7,6 +7,7 @@ import { ConfigProvider, theme } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import { Toaster } from "react-hot-toast";
 import { router } from "@/router";
+import { useAuthStore } from "@/store/authStore";
 import "dayjs/locale/zh-cn";
 import dayjs from "dayjs";
 
@@ -32,6 +33,13 @@ const queryClient = new QueryClient({
  * 主应用组件
  */
 const App: React.FC = () => {
+  const { checkTokenExpiry } = useAuthStore();
+
+  // 页面刷新时检查token是否过期
+  useEffect(() => {
+    checkTokenExpiry();
+  }, [checkTokenExpiry]);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Ant Design 配置 */}

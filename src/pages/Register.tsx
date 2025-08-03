@@ -1,5 +1,14 @@
 import React from "react";
-import {Button, Card, Divider, Form, Input, Select, Space, Typography} from "antd";
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  Select,
+  Space,
+  Typography,
+} from "antd";
 const { Option } = Select;
 import toast from "react-hot-toast";
 import {
@@ -31,11 +40,11 @@ const Register: React.FC = () => {
   const [emailSuffix, setEmailSuffix] = React.useState("@163.com");
 
   const selectAfter = (
-      <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>
-        <Option value="@163.com">@163.com</Option>
-        <Option value="@qq.com">@qq.com</Option>
-        <Option value="@126.com">@126.com</Option>
-      </Select>
+    <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>
+      <Option value="@163.com">@163.com</Option>
+      <Option value="@qq.com">@qq.com</Option>
+      <Option value="@126.com">@126.com</Option>
+    </Select>
   );
 
   // 注册请求

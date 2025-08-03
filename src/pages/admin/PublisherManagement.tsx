@@ -14,7 +14,7 @@ import "./PublisherManagement.scss";
 const PublisherManagement: React.FC = () => {
   const actionRef = useRef<ActionType>(null);
   const [form] = Form.useForm();
-  const [editingPublisher, setEditingPublisher] = useState<Publisher>();
+  const [editingPublisher, setEditingPublisher] = useState<Publisher | null>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [selectedRows, setSelectedRows] = useState<Publisher[]>([]);
@@ -27,13 +27,19 @@ const PublisherManagement: React.FC = () => {
       width: 80,
       order: 1,
       search: false,
-      render: (record) => (record != null ? record : ""),
+      sorter: {
+        multiple: 1, // 排序优先级,数字越小优先级越高
+      },
+      render: (text) => (text != null ? text : ""),
     },
     {
       title: "出版社名称",
       dataIndex: "name",
       ellipsis: true,
       order: 2,
+      sorter: {
+        multiple: 2,
+      },
       formItemProps: {
         rules: [
           {
@@ -42,13 +48,14 @@ const PublisherManagement: React.FC = () => {
           },
         ],
       },
-      render: (record) => (record != null ? record : ""),
+      render: (text) => (text != null ? text : ""),
     },
     {
       title: "图书数量",
       dataIndex: "books",
       hideInTable: true,
       search: false,
+      /* render第一个参数代表字段值,第二个代表完整的行数据对象,第三个代表行索引;可以用_代表不使用该参数 */
       render: (_, record) => record.books?.length || 0,
     },
     {
@@ -58,9 +65,12 @@ const PublisherManagement: React.FC = () => {
       search: false,
       width: 180,
       order: 3,
-      sorter: (a, b) =>
-        new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime(),
-      render: (record) => (record != null ? record : ""),
+      sorter: {
+        compare: (a, b) =>
+          new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime(),
+        multiple: 3,
+      },
+      render: (text) => (text != null ? text : ""),
     },
     {
       title: "更新时间",
@@ -69,9 +79,12 @@ const PublisherManagement: React.FC = () => {
       search: false,
       width: 180,
       order: 4,
-      sorter: (a, b) =>
-        new Date(b.updatedTime).getTime() - new Date(a.updatedTime).getTime(),
-      render: (record) => (record != null ? record : ""),
+      sorter: {
+        compare: (a, b) =>
+          new Date(b.updatedTime).getTime() - new Date(a.updatedTime).getTime(),
+        multiple: 4,
+      },
+      render: (text) => (text != null ? text : ""),
     },
     {
       title: "操作",
@@ -105,19 +118,8 @@ const PublisherManagement: React.FC = () => {
   // 批量删除处理
   const handleBatchDelete = async () => {
     try {
-      const responses = await Promise.all(
-        selectedRowKeys.map((id) => publisherService.delete(id as number))
-      );
-      const successCount = responses.filter(
-        (res) => res.status === 200 || res.status === 204
-      ).length;
-      if (successCount === selectedRowKeys.length) {
-        toast.success(`批量删除成功，共删除 ${successCount} 个出版社`);
-      } else {
-        toast.success(
-          `批量删除完成，共处理 ${selectedRowKeys.length} 个出版社`
-        );
-      }
+      await publisherService.batchDelete(selectedRowKeys as number[]);
+      toast.success(`批量删除成功，共删除 ${selectedRowKeys.length} 个出版社`);
       setSelectedRowKeys([]);
       setSelectedRows([]);
       actionRef.current?.reload();
@@ -182,15 +184,11 @@ const PublisherManagement: React.FC = () => {
   // 删除出版社
   const handleDelete = async (id: number) => {
     try {
-      const response = await publisherService.delete(id);
-      if (response.status === 200 || response.status === 204) {
-        toast.success("删除成功");
-      } else {
-        toast.success("删除操作已完成");
-      }
+      await publisherService.delete(id);
+      toast.success("删除成功");
       actionRef.current?.reload();
     } catch (error) {
-      toast.error("删除失败");
+      toast.error("删除失败" + error);
     }
   };
 
@@ -199,29 +197,20 @@ const PublisherManagement: React.FC = () => {
     try {
       const values = await form.validateFields();
 
-      let response;
       if (editingPublisher) {
         // 编辑
-        response = await publisherService.update(editingPublisher.id, values);
-        if (response.status === 200) {
-          toast.success("更新成功");
-        } else {
-          toast.success("更新操作已完成");
-        }
+        await publisherService.update(editingPublisher.id, values);
+        toast.success("更新成功");
       } else {
         // 新增
-        response = await publisherService.create(values);
-        if (response.status === 201) {
-          toast.success("创建成功");
-        } else {
-          toast.success("创建操作已完成");
-        }
+        await publisherService.create(values);
+        toast.success("创建成功");
       }
 
       setModalVisible(false);
       actionRef.current?.reload();
     } catch (error) {
-      toast.error(editingPublisher ? "更新失败" : "创建失败");
+      toast.error(editingPublisher ? "更新失败" + error : "创建失败" + error);
     }
   };
 
@@ -231,9 +220,16 @@ const PublisherManagement: React.FC = () => {
         headerTitle="出版社管理"
         actionRef={actionRef}
         rowKey="id"
+        // 启用复选框
         rowSelection={rowSelection}
+        // 自动生成搜索表单
         search={{
-          labelWidth: "auto",
+          labelWidth: "auto", // 标签宽度
+          span: 6, // 每个搜索项占用的栅格数
+          collapsed: false, // 是否默认收起
+          collapseRender: false, // 是否显示收起按钮
+          searchText: "搜索", // 搜索按钮文本
+          resetText: "重置", // 重置按钮文本
         }}
         toolBarRender={() => [
           <Button
@@ -260,16 +256,17 @@ const PublisherManagement: React.FC = () => {
         ]}
         request={fetchPublishers}
         columns={columns}
+        // 分页
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
           showQuickJumper: true,
         }}
         options={{
-          reload: true,
-          density: true,
-          fullScreen: true,
-          setting: true,
+          reload: true, // 刷新
+          density: true, // 密度调整
+          fullScreen: true, // 全屏
+          setting: true, // 列设置
         }}
       />
 
@@ -279,7 +276,7 @@ const PublisherManagement: React.FC = () => {
         onOk={handleSave}
         onCancel={() => setModalVisible(false)}
         width={600}
-        destroyOnClose
+        destroyOnHidden={true}
       >
         <Form form={form} layout="vertical" preserve={false}>
           <Form.Item

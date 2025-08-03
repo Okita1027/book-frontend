@@ -1,3 +1,4 @@
+import { Publisher } from '@/types';
 // Publisher相关类型定义
 
 import type {Book} from '@/types/Book';
