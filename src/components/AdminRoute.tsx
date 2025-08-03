@@ -24,7 +24,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
 
   // 检查是否为管理员
   if (user?.role !== 'Admin') {
-    message.error('权限不足！只有管理员才能访问后台管理系统。');
+    message.error('权限不足');
     return <Navigate to="/" replace />;
   }
 

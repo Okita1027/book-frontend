@@ -1,14 +1,20 @@
 // 应用入口文件
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from '@/App';
-import './index.css';
+import { createRoot } from "react-dom/client";
+import App from "@/App";
+import "./index.css";
+import { StrictMode } from "react";
 
 // 创建根节点并渲染应用
-const root = createRoot(document.getElementById('root')!);
-root.render(<App />);
+const root = createRoot(document.getElementById("root")!);
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
 
-// 开发环境下启用热模块替换
+/**
+ * 热模块替换（HMR）是一种在应用程序运行时动态替换、添加或删除模块的技术，而无需刷新整个页面。
+ */
 if (import.meta.hot) {
   import.meta.hot.accept();
 }

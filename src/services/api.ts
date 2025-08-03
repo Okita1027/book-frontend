@@ -1,7 +1,7 @@
 // API基础配置
 import axios from 'axios';
 
-// 创建axios实例
+// 自定义Axios实例
 export const apiClient = axios.create({
     baseURL: '/api', // 通过Vite代理转发到后端服务
     timeout: 10000,

@@ -11,9 +11,8 @@ const BookBrowse = lazy(() => import('@/pages/BookBrowse'));
 // 后台管理页面懒加载
 const PublisherManagement = lazy(() => import('@/pages/admin/PublisherManagement'));
 
-// 创建路由配置
+// 路由配置
 export const router = createBrowserRouter([
-  // 登录和注册页面（独立页面）
   {
     path: '/login',
     element: <Login />
@@ -53,8 +52,7 @@ export const router = createBrowserRouter([
       }
     ]
   },
-  
-  // 404页面重定向到首页
+  // 通配符路由，匹配所有路径，重定向到首页
   {
     path: '*',
     element: <Navigate to="/" replace />
