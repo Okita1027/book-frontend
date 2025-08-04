@@ -44,3 +44,20 @@ export interface EditBookDTO {
   publisherId: number;
   categoryIds: number[];
 }
+
+// RawBooks接口返回的数据类型
+export interface RawBook {
+  id: number;
+  title: string;
+  isbn: string;
+  publishedDate: string;
+  stock: number;
+  available: number;
+  authorId: number;
+  authorName: string;
+  publisherId: number;
+  publisherName: string;
+  createdTime: string;
+  updatedTime: string;
+  categoryDictionary: Record<string, string>;
+}

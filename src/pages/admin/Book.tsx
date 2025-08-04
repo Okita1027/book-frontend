@@ -4,11 +4,29 @@ import {
   type ProColumns,
   ProTable,
 } from "@ant-design/pro-components";
-import { Button, Form, Input, Modal, Popconfirm, Select, DatePicker, InputNumber, Row, Col } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  DatePicker,
+  InputNumber,
+  Row,
+  Col,
+} from "antd";
 import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { bookService, publisherService, authorService, categoryService } from "@/services";
-import type { BookVO, EditBookDTO, Publisher, Author, Category } from "@/types";
+import { bookService } from "@/services";
+import type {
+  BookVO,
+  EditBookDTO,
+  RawBook,
+  Publisher,
+  Author,
+  Category,
+} from "@/types";
 import dayjs from "dayjs";
 import "./Book.scss";
 
@@ -25,13 +43,14 @@ interface BookRequestParams {
 const Book: React.FC = () => {
   const actionRef = useRef<ActionType>(null);
   const [form] = Form.useForm();
-  const [editingBook, setEditingBook] = useState<BookVO | null>();
+  const [editingBook, setEditingBook] = useState<RawBook | null>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [selectedRows, setSelectedRows] = useState<BookVO[]>([]);
+
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [rawBooksCache, setRawBooksCache] = useState<RawBook[]>([]);
 
   // 表格列定义
   const columns: ProColumns<BookVO>[] = [
@@ -67,7 +86,12 @@ const Book: React.FC = () => {
       fieldProps: {
         maxLength: 13,
         onKeyPress: (e: React.KeyboardEvent) => {
-          if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') {
+          if (
+            !/[0-9]/.test(e.key) &&
+            e.key !== "Backspace" &&
+            e.key !== "Delete" &&
+            e.key !== "Tab"
+          ) {
             e.preventDefault();
           }
         },
@@ -79,7 +103,8 @@ const Book: React.FC = () => {
       width: 120,
       ellipsis: true,
       sorter: {
-        compare: (a, b) => (a.authorName || "").localeCompare(b.authorName || ""),
+        compare: (a, b) =>
+          (a.authorName || "").localeCompare(b.authorName || ""),
         multiple: 6,
       },
     },
@@ -89,7 +114,8 @@ const Book: React.FC = () => {
       width: 120,
       ellipsis: true,
       sorter: {
-        compare: (a, b) => (a.publisherName || "").localeCompare(b.publisherName || ""),
+        compare: (a, b) =>
+          (a.publisherName || "").localeCompare(b.publisherName || ""),
         multiple: 7,
       },
     },
@@ -118,13 +144,18 @@ const Book: React.FC = () => {
       align: "center",
       sorter: {
         compare: (a, b) => {
-          const aDate = a.publishedDate ? new Date(a.publishedDate).getTime() : 0;
-          const bDate = b.publishedDate ? new Date(b.publishedDate).getTime() : 0;
+          const aDate = a.publishedDate
+            ? new Date(a.publishedDate).getTime()
+            : 0;
+          const bDate = b.publishedDate
+            ? new Date(b.publishedDate).getTime()
+            : 0;
           return aDate - bDate;
         },
         multiple: 9,
       },
-      render: (text) => (text ? dayjs(text).format("YYYY-MM-DD") : "——"),
+      render: (text: string) =>
+        text ? dayjs(text).format("YYYY-MM-DD") : "——",
     },
     {
       title: "库存数",
@@ -170,12 +201,7 @@ const Book: React.FC = () => {
           okText="确定"
           cancelText="取消"
         >
-          <Button
-            type="link"
-            size="small"
-            danger
-            icon={<DeleteOutlined />}
-          >
+          <Button type="link" size="small" danger icon={<DeleteOutlined />}>
             删除
           </Button>
         </Popconfirm>,
@@ -188,24 +214,38 @@ const Book: React.FC = () => {
     setEditingBook(null);
     form.resetFields();
     setModalVisible(true);
-    loadSelectOptions();
   };
 
   // 编辑图书
-  const handleEdit = (book: BookVO) => {
-    setEditingBook(book);
+  const handleEdit = (bookVO: BookVO) => {
+    // 从缓存中查找对应的原始图书数据
+    const rawBook = rawBooksCache.find((book) => book.id === bookVO.id);
+
+    if (!rawBook) {
+      toast.error("获取图书详细信息失败，请刷新页面重试");
+      return;
+    }
+
+    setEditingBook(rawBook);
+
+    // 将categoryDictionary转换为categoryIds数组
+    const categoryIds = Object.keys(rawBook.categoryDictionary).map((id) =>
+      parseInt(id)
+    );
+
     form.setFieldsValue({
-      title: book.title,
-      isbn: book.isbn,
-      publishedDate: book.publishedDate ? dayjs(book.publishedDate) : null,
-      stock: book.stock,
-      available: book.available,
-      authorId: book.authorName, // 这里需要根据实际API调整
-      publisherId: book.publisherName, // 这里需要根据实际API调整
-      categoryIds: book.categoryNames || [],
+      title: rawBook.title,
+      isbn: rawBook.isbn,
+      publishedDate: rawBook.publishedDate
+        ? dayjs(rawBook.publishedDate)
+        : null,
+      stock: rawBook.stock,
+      available: rawBook.available,
+      authorId: rawBook.authorId,
+      publisherId: rawBook.publisherId,
+      categoryIds: categoryIds,
     });
     setModalVisible(true);
-    loadSelectOptions();
   };
 
   // 批量删除处理
@@ -214,7 +254,6 @@ const Book: React.FC = () => {
       await bookService.batchDelete(selectedRowKeys as number[]);
       toast.success(`批量删除成功，共删除 ${selectedRowKeys.length} 本图书`);
       setSelectedRowKeys([]);
-      setSelectedRows([]);
       actionRef.current?.reload();
     } catch (error) {
       toast.error("批量删除失败" + error);
@@ -224,16 +263,31 @@ const Book: React.FC = () => {
   // 行选择配置
   const rowSelection = {
     selectedRowKeys,
-    onChange: (keys: React.Key[], rows: BookVO[]) => {
-      setSelectedRowKeys(keys);
-      setSelectedRows(rows);
-    },
   };
 
   // 获取图书列表
   const fetchBooks = async (params: BookRequestParams) => {
     try {
-      const data = await bookService.getAll();
+      const rawData = await bookService.getRawBooks();
+
+      // 缓存原始数据供编辑时使用
+      setRawBooksCache(rawData);
+
+      // 从RawBooks数据中提取下拉选项数据
+      extractSelectOptionsFromRawBooks(rawData);
+
+      // 将 RawBook 数据转换为 BookVO 格式用于表格显示
+      const data: BookVO[] = rawData.map((book) => ({
+        id: book.id,
+        title: book.title,
+        isbn: book.isbn,
+        publishedDate: book.publishedDate,
+        stock: book.stock,
+        available: book.available,
+        authorName: book.authorName,
+        publisherName: book.publisherName,
+        categoryNames: Object.values(book.categoryDictionary),
+      }));
 
       // 根据搜索条件过滤数据
       let filteredData = data;
@@ -249,12 +303,16 @@ const Book: React.FC = () => {
       }
       if (params.authorName) {
         filteredData = filteredData.filter((item: BookVO) =>
-          item.authorName?.toLowerCase().includes(params.authorName!.toLowerCase())
+          item.authorName
+            ?.toLowerCase()
+            .includes(params.authorName!.toLowerCase())
         );
       }
       if (params.publisherName) {
         filteredData = filteredData.filter((item: BookVO) =>
-          item.publisherName?.toLowerCase().includes(params.publisherName!.toLowerCase())
+          item.publisherName
+            ?.toLowerCase()
+            .includes(params.publisherName!.toLowerCase())
         );
       }
 
@@ -288,11 +346,13 @@ const Book: React.FC = () => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      
+
       const bookData: EditBookDTO = {
         title: values.title,
         isbn: values.isbn,
-        publishedDate: values.publishedDate ? values.publishedDate.format("YYYY-MM-DD") : undefined,
+        publishedDate: values.publishedDate
+          ? values.publishedDate.format("YYYY-MM-DD")
+          : undefined,
         stock: values.stock,
         available: values.available,
         authorId: values.authorId,
@@ -313,7 +373,7 @@ const Book: React.FC = () => {
       setModalVisible(false);
       actionRef.current?.reload();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       // 检查是否有errorFields（Ant Design表单错误）
       if (error?.errorFields) {
@@ -324,20 +384,53 @@ const Book: React.FC = () => {
     }
   };
 
-  // 加载下拉选项数据
-  const loadSelectOptions = async () => {
-    try {
-      const [publishersData, authorsData, categoriesData] = await Promise.all([
-        publisherService.getAll(),
-        authorService.getAll(),
-        categoryService.getAll(),
-      ]);
-      setPublishers(publishersData);
-      setAuthors(authorsData);
-      setCategories(categoriesData);
-    } catch (error) {
-      toast.error("加载选项数据失败" + error);
-    }
+  // 从RawBooks数据中提取下拉选项数据
+  const extractSelectOptionsFromRawBooks = (rawBooks: RawBook[]) => {
+    // 提取作者数据
+    const authorsMap = new Map<number, Author>();
+    rawBooks.forEach((book) => {
+      if (!authorsMap.has(book.authorId)) {
+        authorsMap.set(book.authorId, {
+          id: book.authorId,
+          name: book.authorName,
+          createdTime: "",
+          updatedTime: "",
+        });
+      }
+    });
+
+    // 提取出版社数据
+    const publishersMap = new Map<number, Publisher>();
+    rawBooks.forEach((book) => {
+      if (!publishersMap.has(book.publisherId)) {
+        publishersMap.set(book.publisherId, {
+          id: book.publisherId,
+          name: book.publisherName,
+          createdTime: "",
+          updatedTime: "",
+        });
+      }
+    });
+
+    // 提取分类数据
+    const categoriesMap = new Map<number, Category>();
+    rawBooks.forEach((book) => {
+      Object.entries(book.categoryDictionary).forEach(([id, name]) => {
+        const categoryId = parseInt(id);
+        if (!categoriesMap.has(categoryId)) {
+          categoriesMap.set(categoryId, {
+            id: categoryId,
+            name: name,
+            createdTime: "",
+            updatedTime: "",
+          });
+        }
+      });
+    });
+
+    setAuthors(Array.from(authorsMap.values()));
+    setPublishers(Array.from(publishersMap.values()));
+    setCategories(Array.from(categoriesMap.values()));
   };
 
   return (
@@ -348,7 +441,7 @@ const Book: React.FC = () => {
         rowKey="id"
         search={{
           labelWidth: 50,
-          span: {xs: 24, sm: 12, md: 8, lg: 6, xl: 6, xxl: 6}
+          span: { xs: 24, sm: 12, md: 8, lg: 6, xl: 6, xxl: 6 },
         }}
         rowSelection={rowSelection}
         toolBarRender={() => [
@@ -396,10 +489,9 @@ const Book: React.FC = () => {
         open={modalVisible}
         onOk={handleSave}
         onCancel={() => setModalVisible(false)}
-        width={800}
-        destroyOnHidden={true}
+        width={600}
       >
-        <Form form={form} layout="vertical" preserve={false}>
+        <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -419,15 +511,22 @@ const Book: React.FC = () => {
                 label="ISBN"
                 rules={[
                   { required: true, message: "请输入ISBN" },
-                  { max: 13, message: "ISBN不能超过13个字符" },
-                  { pattern: /^[0-9]{1,13}$/, message: "ISBN只能包含数字，最多13位" },
+                  {
+                    pattern: /^[0-9]{1,13}$/,
+                    message: "ISBN只能包含数字，最多13位",
+                  },
                 ]}
               >
-                <Input 
-                  placeholder="请输入ISBN" 
+                <Input
+                  placeholder="请输入ISBN"
                   maxLength={13}
-                  onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') {
+                  onKeyDown={(e) => {
+                    if (
+                      !/[0-9]/.test(e.key) &&
+                      e.key !== "Backspace" &&
+                      e.key !== "Delete" &&
+                      e.key !== "Tab"
+                    ) {
                       e.preventDefault();
                     }
                   }}
@@ -443,7 +542,11 @@ const Book: React.FC = () => {
                 label="作者"
                 rules={[{ required: true, message: "请选择作者" }]}
               >
-                <Select placeholder="请选择作者" showSearch optionFilterProp="children">
+                <Select
+                  placeholder="请选择作者"
+                  showSearch
+                  optionFilterProp="children"
+                >
                   {authors.map((author) => (
                     <Select.Option key={author.id} value={author.id}>
                       {author.name}
@@ -458,7 +561,11 @@ const Book: React.FC = () => {
                 label="出版社"
                 rules={[{ required: true, message: "请选择出版社" }]}
               >
-                <Select placeholder="请选择出版社" showSearch optionFilterProp="children">
+                <Select
+                  placeholder="请选择出版社"
+                  showSearch
+                  optionFilterProp="children"
+                >
                   {publishers.map((publisher) => (
                     <Select.Option key={publisher.id} value={publisher.id}>
                       {publisher.name}
@@ -471,10 +578,7 @@ const Book: React.FC = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                name="categoryIds"
-                label="分类"
-              >
+              <Form.Item name="categoryIds" label="分类">
                 <Select
                   mode="multiple"
                   placeholder="请选择分类"
@@ -493,8 +597,12 @@ const Book: React.FC = () => {
               <Form.Item
                 name="publishedDate"
                 label="出版日期"
+                rules={[{ required: true, message: "请选择出版日期" }]}
               >
-                <DatePicker placeholder="请选择出版日期" style={{ width: "100%" }} />
+                <DatePicker
+                  placeholder="请选择出版日期"
+                  style={{ width: "100%" }}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -507,12 +615,17 @@ const Book: React.FC = () => {
                 rules={[
                   { type: "number", min: 0, message: "库存数量不能小于0" },
                 ]}
+                dependencies={["available"]}
               >
                 <InputNumber
                   placeholder="请输入库存数量"
                   style={{ width: "100%" }}
                   min={0}
                   defaultValue={0}
+                  onChange={() => {
+                    // 当库存数量变化时，重新验证可借数量
+                    form.validateFields(["available"]);
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -528,7 +641,7 @@ const Book: React.FC = () => {
                   placeholder="请输入可借数量"
                   style={{ width: "100%" }}
                   min={0}
-                  defaultValue={0}
+                  disabled
                 />
               </Form.Item>
             </Col>
