@@ -1,4 +1,3 @@
-// 应用入口文件
 import { createRoot } from "react-dom/client";
 import App from "@/App";
 import "./index.css";

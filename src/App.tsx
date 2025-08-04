@@ -1,4 +1,3 @@
-// 主应用组件
 import React, { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import dayjs from "dayjs";
 // 设置dayjs为中文
 dayjs.locale("zh-cn");
 
+// 创建React Query客户端实例
 const queryClient = new QueryClient({
   defaultOptions: {
     // 查询类操作
