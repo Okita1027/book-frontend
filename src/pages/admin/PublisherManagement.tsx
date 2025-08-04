@@ -11,13 +11,20 @@ import { publisherService } from "@/services";
 import type { Publisher } from "@/types";
 import "./PublisherManagement.scss";
 
+// ProTable request 参数类型声明
+interface PublisherRequestParams {
+  pageSize?: number;
+  current?: number;
+  name?: string;
+}
+
 const PublisherManagement: React.FC = () => {
-  const actionRef = useRef<ActionType>(null);
-  const [form] = Form.useForm();
-  const [editingPublisher, setEditingPublisher] = useState<Publisher | null>();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [selectedRows, setSelectedRows] = useState<Publisher[]>([]);
+  const actionRef = useRef<ActionType>(null); // 表格操作引用
+  const [form] = Form.useForm();  // 模态对话框中的表单数据
+  const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(); // 新增/编辑状态
+  const [modalVisible, setModalVisible] = useState(false);  // 模态对话框的显示状态
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);  // 选中行的ID
+  const [selectedRows, setSelectedRows] = useState<Publisher[]>([]);  // 选中行的完整数据
 
   // 表格列定义
   const columns: ProColumns<Publisher>[] = [
@@ -122,7 +129,7 @@ const PublisherManagement: React.FC = () => {
           okText="确定"
           cancelText="取消"
         >
-          <Button type="link" size="small" danger icon={<DeleteOutlined />}>
+          <Button type="link" size="small" danger={true} icon={<DeleteOutlined />}>
             删除
           </Button>
         </Popconfirm>,
@@ -153,7 +160,7 @@ const PublisherManagement: React.FC = () => {
   };
 
   // 获取出版社列表
-  const fetchPublishers = async (params: any) => {
+  const fetchPublishers = async (params: PublisherRequestParams) => {
     try {
       const data = await publisherService.getAll();
 
@@ -161,7 +168,7 @@ const PublisherManagement: React.FC = () => {
       let filteredData = data;
       if (params.name) {
         filteredData = data.filter((item: Publisher) =>
-          item.name.toLowerCase().includes(params.name.toLowerCase())
+          item.name.toLowerCase().includes(params.name!.toLowerCase())
         );
       }
 
@@ -196,7 +203,7 @@ const PublisherManagement: React.FC = () => {
     setModalVisible(true);
   };
 
-  // 删除出版社
+  // 处理删除
   const handleDelete = async (id: number) => {
     try {
       await publisherService.delete(id);
@@ -224,17 +231,22 @@ const PublisherManagement: React.FC = () => {
 
       setModalVisible(false);
       actionRef.current?.reload();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // 检查是否有errorFields（Ant Design表单错误）
+      // Ant Design 表单错误
       if (error.errorFields) {
         const msg = error.errorFields[0].errors[0];
         toast.error(editingPublisher ? "更新失败:" + msg : "创建失败:" + msg);
       }
-      // 检查是否为普通Error对象
+      // 普通错误
       else if (error.message) {
-        toast.error(editingPublisher ? "更新失败:" + error.message : "创建失败:" + error.message);
-      }
-      else {
+        toast.error(
+          editingPublisher
+            ? "更新失败:" + error.message
+            : "创建失败:" + error.message
+        );
+      } else {
         toast.error(editingPublisher ? "更新失败" : "创建失败");
       }
     }
@@ -257,6 +269,7 @@ const PublisherManagement: React.FC = () => {
           searchText: "搜索", // 搜索按钮文本
           resetText: "重置", // 重置按钮文本
         }}
+        // 操作标题栏
         toolBarRender={() => [
           <Button
             key="add"
@@ -266,10 +279,11 @@ const PublisherManagement: React.FC = () => {
           >
             新增出版社
           </Button>,
+          // 多选记录以进行批量删除
           selectedRowKeys.length > 0 && (
             <Popconfirm
               key="batchDelete"
-              title={`确定要删除选中的 ${selectedRowKeys.length} 个出版社吗？`}
+              title={`确定要删除选中的 ${selectedRowKeys.length} 个出版社吗?`}
               onConfirm={handleBatchDelete}
               okText="确定"
               cancelText="取消"
@@ -296,6 +310,7 @@ const PublisherManagement: React.FC = () => {
         }}
       />
 
+      {/*模态对话框：用于进行数据编辑*/}
       <Modal
         title={editingPublisher ? "编辑出版社" : "新增出版社"}
         open={modalVisible}
@@ -310,7 +325,7 @@ const PublisherManagement: React.FC = () => {
             label="出版社名称"
             rules={[
               { required: true, message: "请输入出版社名称" },
-              { max: 100, message: "出版社名称不能超过100个字符" },
+              { max: 50, message: "出版社名称不能超过50个字符" },
             ]}
           >
             <Input placeholder="请输入出版社名称" />
