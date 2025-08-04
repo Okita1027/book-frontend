@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { publisherService } from "@/services";
 import type { Publisher } from "@/types";
-import "./PublisherManagement.scss";
+import "./Publisher.scss";
 
 // ProTable request 参数类型声明
 interface PublisherRequestParams {
@@ -18,7 +18,7 @@ interface PublisherRequestParams {
   name?: string;
 }
 
-const PublisherManagement: React.FC = () => {
+const Publisher: React.FC = () => {
   const actionRef = useRef<ActionType>(null); // 表格操作引用
   const [form] = Form.useForm();  // 模态对话框中的表单数据
   const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(); // 新增/编辑状态
@@ -47,14 +47,8 @@ const PublisherManagement: React.FC = () => {
       order: 2,
       sorter: {
         /**
-         * 中文比较规则：
-         *    拼音顺序：按汉字的拼音首字母排序
-         *    笔画顺序：当拼音相同时，按笔画数排序
-         *    Unicode顺序：在没有明确本地化规则时，按 Unicode 编码排序
-         * 英文比较规则：
-         *    字典顺序：按字母表顺序排序（A-Z）
-         *    大小写处理：通常不区分大小写，除非特别指定
-         *    特殊字符：空格和特殊字符也会影响排序
+         * 中文比较规则：按汉字的拼音首字母排序当拼音相同时，按笔画数排序
+         * 英文比较规则：按字母表顺序排序
          */
         compare: (a, b) => a.name.localeCompare(b.name),
         multiple: 2,
@@ -68,14 +62,6 @@ const PublisherManagement: React.FC = () => {
         ],
       },
       render: (text) => (text != null ? text : ""),
-    },
-    {
-      title: "图书数量",
-      dataIndex: "books",
-      hideInTable: true,
-      search: false,
-      /* render第一个参数代表字段值,第二个代表完整的行数据对象,第三个代表行索引;可以用_代表不使用该参数 */
-      render: (_, record) => record.books?.length || 0,
     },
     {
       title: "创建时间",
@@ -112,6 +98,7 @@ const PublisherManagement: React.FC = () => {
       valueType: "option",
       width: 150,
       align: "center",
+      /* render第一个参数代表字段值,第二个代表完整的行数据对象,第三个代表行索引;可以用_代表不使用该参数 */
       render: (_, record) => [
         <Button
           key="edit"
@@ -317,9 +304,8 @@ const PublisherManagement: React.FC = () => {
         onOk={handleSave}
         onCancel={() => setModalVisible(false)}
         width={600}
-        destroyOnHidden={true}
       >
-        <Form form={form} layout="vertical" preserve={false}>
+        <Form form={form} layout="vertical">
           <Form.Item
             name="name"
             label="出版社名称"
@@ -336,4 +322,4 @@ const PublisherManagement: React.FC = () => {
   );
 };
 
-export default PublisherManagement;
+export default Publisher;

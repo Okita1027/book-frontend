@@ -1,0 +1,106 @@
+.book-management {
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .ant-pro-table {
+    .ant-pro-table-search {
+      padding: 16px 24px;
+      background: #fafafa;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .ant-table-thead > tr > th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+
+    .ant-table-tbody > tr:hover > td {
+      background: #f0f9ff;
+    }
+  }
+
+  .ant-btn {
+    border-radius: 6px;
+    
+    &.ant-btn-primary {
+      background: #1890ff;
+      border-color: #1890ff;
+      
+      &:hover {
+        background: #40a9ff;
+        border-color: #40a9ff;
+      }
+    }
+
+    &.ant-btn-primary.ant-btn-dangerous {
+      background: #ff4d4f;
+      border-color: #ff4d4f;
+      
+      &:hover {
+        background: #ff7875;
+        border-color: #ff7875;
+      }
+    }
+  }
+
+  .ant-modal {
+    .ant-modal-header {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .ant-form-item-label > label {
+      font-weight: 500;
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 768px) {
+    padding: 16px;
+    
+    .ant-pro-table-search {
+      padding: 12px 16px;
+    }
+  }
+}
+
+// 表格操作按钮样式
+.ant-table-tbody {
+  .ant-btn-link {
+    padding: 0;
+    height: auto;
+    
+    &.ant-btn-dangerous {
+      color: #ff4d4f;
+      
+      &:hover {
+        color: #ff7875;
+      }
+    }
+  }
+}
+
+// 批量操作工具栏
+.ant-pro-table-list-toolbar {
+  .ant-pro-table-list-toolbar-right {
+    .ant-btn + .ant-btn {
+      margin-left: 8px;
+    }
+  }
+}
+
+// 搜索表单样式优化
+.ant-pro-query-filter {
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  .ant-form-item-control-input {
+    .ant-input,
+    .ant-select-selector {
+      border-radius: 4px;
+    }
+  }
+}
