@@ -8,23 +8,21 @@ import { Button, Form, Input, Modal, Popconfirm } from "antd";
 import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { publisherService } from "@/services";
-import type { Publisher } from "@/types";
+import type { BaseRequestParams, Publisher } from "@/types";
 import "./Publisher.scss";
 
 // ProTable request 参数类型声明
-interface PublisherRequestParams {
-  pageSize?: number;
-  current?: number;
+interface PublisherRequestParams extends BaseRequestParams {
   name?: string;
 }
 
 const Publisher: React.FC = () => {
   const actionRef = useRef<ActionType>(null); // 表格操作引用
-  const [form] = Form.useForm();  // 模态对话框中的表单数据
+  const [form] = Form.useForm(); // 模态对话框中的表单数据
   const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(); // 新增/编辑状态
-  const [modalVisible, setModalVisible] = useState(false);  // 模态对话框的显示状态
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);  // 选中行的ID
-  const [selectedRows, setSelectedRows] = useState<Publisher[]>([]);  // 选中行的完整数据
+  const [modalVisible, setModalVisible] = useState(false); // 模态对话框的显示状态
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); // 选中行的ID
+  const [selectedRows, setSelectedRows] = useState<Publisher[]>([]); // 选中行的完整数据
 
   // 表格列定义
   const columns: ProColumns<Publisher>[] = [
@@ -116,7 +114,12 @@ const Publisher: React.FC = () => {
           okText="确定"
           cancelText="取消"
         >
-          <Button type="link" size="small" danger={true} icon={<DeleteOutlined />}>
+          <Button
+            type="link"
+            size="small"
+            danger={true}
+            icon={<DeleteOutlined />}
+          >
             删除
           </Button>
         </Popconfirm>,
@@ -219,7 +222,7 @@ const Publisher: React.FC = () => {
       setModalVisible(false);
       actionRef.current?.reload();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       // Ant Design 表单错误
       if (error.errorFields) {

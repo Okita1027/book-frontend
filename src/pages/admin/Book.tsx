@@ -26,14 +26,13 @@ import type {
   Publisher,
   Author,
   Category,
+  BaseRequestParams,
 } from "@/types";
 import dayjs from "dayjs";
 import "./Book.scss";
 
 // ProTable request 参数类型定义
-interface BookRequestParams {
-  pageSize?: number;
-  current?: number;
+interface BookRequestParams extends BaseRequestParams {
   title?: string;
   isbn?: string;
   authorName?: string;
@@ -85,11 +84,10 @@ const Book: React.FC = () => {
       },
       fieldProps: {
         maxLength: 13,
-        onKeyPress: (e: React.KeyboardEvent) => {
+        onKeyDown: (e: React.KeyboardEvent) => {
           if (
             !/[0-9]/.test(e.key) &&
             e.key !== "Backspace" &&
-            e.key !== "Delete" &&
             e.key !== "Tab"
           ) {
             e.preventDefault();
@@ -154,8 +152,8 @@ const Book: React.FC = () => {
         },
         multiple: 9,
       },
-      render: (text: string) =>
-        text ? dayjs(text).format("YYYY-MM-DD") : "——",
+      render: (text) =>
+        text ? dayjs(text as string).format("YYYY-MM-DD") : "——",
     },
     {
       title: "库存数",
@@ -497,10 +495,7 @@ const Book: React.FC = () => {
               <Form.Item
                 name="title"
                 label="书名"
-                rules={[
-                  { required: true, message: "请输入书名" },
-                  { max: 200, message: "书名不能超过200个字符" },
-                ]}
+                rules={[{ required: true, message: "请输入书名" }]}
               >
                 <Input placeholder="请输入书名" />
               </Form.Item>
@@ -524,7 +519,6 @@ const Book: React.FC = () => {
                     if (
                       !/[0-9]/.test(e.key) &&
                       e.key !== "Backspace" &&
-                      e.key !== "Delete" &&
                       e.key !== "Tab"
                     ) {
                       e.preventDefault();
@@ -545,6 +539,7 @@ const Book: React.FC = () => {
                 <Select
                   placeholder="请选择作者"
                   showSearch
+                  // 在 React 中，组件的子元素统一称为 children
                   optionFilterProp="children"
                 >
                   {authors.map((author) => (
@@ -615,36 +610,32 @@ const Book: React.FC = () => {
                 rules={[
                   { type: "number", min: 0, message: "库存数量不能小于0" },
                 ]}
-                dependencies={["available"]}
+                // dependencies={["available"]}
               >
                 <InputNumber
                   placeholder="请输入库存数量"
                   style={{ width: "100%" }}
                   min={0}
                   defaultValue={0}
-                  onChange={() => {
-                    // 当库存数量变化时，重新验证可借数量
-                    form.validateFields(["available"]);
-                  }}
+                  // onChange={() => {
+                  //   // 当库存数量变化时，重新验证可借数量
+                  //   form.validateFields(["available"]);
+                  // }}
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Form.Item
                 name="available"
                 label="可借数量"
-                rules={[
-                  { type: "number", min: 0, message: "可借数量不能小于0" },
-                ]}
               >
                 <InputNumber
                   placeholder="请输入可借数量"
                   style={{ width: "100%" }}
-                  min={0}
                   disabled
                 />
               </Form.Item>
-            </Col>
+            </Col> */}
           </Row>
         </Form>
       </Modal>
