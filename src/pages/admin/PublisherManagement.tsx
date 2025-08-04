@@ -62,6 +62,7 @@ const PublisherManagement: React.FC = () => {
       title: "创建时间",
       dataIndex: "createdTime",
       valueType: "dateTime",
+      align: "center",
       search: false,
       width: 180,
       order: 3,
@@ -76,6 +77,7 @@ const PublisherManagement: React.FC = () => {
       title: "更新时间",
       dataIndex: "updatedTime",
       valueType: "dateTime",
+      align: "center",
       search: false,
       width: 180,
       order: 4,
@@ -90,6 +92,7 @@ const PublisherManagement: React.FC = () => {
       title: "操作",
       valueType: "option",
       width: 150,
+      align: "center",
       render: (_, record) => [
         <Button
           key="edit"

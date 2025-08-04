@@ -3,9 +3,9 @@
 import type {Loan} from '@/types/Loan';
 import type {Fine} from '@/types/Fine';
 
-export enum UserRole {
-    Member = 0,
-    Admin = 1
+const enum UserRole {
+    Member = "Member",
+    Admin = "Admin"
 }
 
 export interface User {

@@ -57,7 +57,6 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           isAuthenticated: false,
         });
-
       },
 
       // 检查token是否过期
