@@ -1,4 +1,3 @@
-// 应用全局状态管理
 import { create } from "zustand";
 
 // 应用状态接口

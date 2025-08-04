@@ -184,7 +184,6 @@ const BookBrowse: React.FC = () => {
                 // ISBN只允许输入数字,最长13位
                 maxLength={13}
                 onKeyDown={(e) => {
-                  // 阻止非数字字符输入
                   if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Tab') {
                     e.preventDefault();
                   }

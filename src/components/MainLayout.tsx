@@ -1,4 +1,3 @@
-// 主布局组件
 import React from "react";
 import type { MenuProps } from "antd";
 import { Button, Layout, Menu, Space, Typography } from "antd";
@@ -92,7 +91,7 @@ const MainLayout: React.FC = () => {
   // 处理菜单点击
   const handleMenuClick = ({ key }: { key: string }) => {
     if (key === "/admin") {
-      // 检查用户权限
+      // 检查登录状态
       if (!isAuthenticated) {
         toast.error("请先登录");
         navigate("/login");

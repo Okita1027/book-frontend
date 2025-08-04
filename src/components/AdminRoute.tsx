@@ -1,4 +1,3 @@
-// 管理员路由保护组件
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import toast from 'react-hot-toast';

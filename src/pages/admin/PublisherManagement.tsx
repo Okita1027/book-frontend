@@ -25,9 +25,10 @@ const PublisherManagement: React.FC = () => {
       title: "ID",
       dataIndex: "id",
       width: 80,
-      order: 1,
+      order: 1, // 数值越小，列在表格中的位置越靠前
       search: false,
       sorter: {
+        compare: (a, b) => a.id - b.id,
         multiple: 1, // 排序优先级,数字越小优先级越高
       },
       render: (text) => (text != null ? text : ""),
@@ -38,6 +39,17 @@ const PublisherManagement: React.FC = () => {
       ellipsis: true,
       order: 2,
       sorter: {
+        /**
+         * 中文比较规则：
+         *    拼音顺序：按汉字的拼音首字母排序
+         *    笔画顺序：当拼音相同时，按笔画数排序
+         *    Unicode顺序：在没有明确本地化规则时，按 Unicode 编码排序
+         * 英文比较规则：
+         *    字典顺序：按字母表顺序排序（A-Z）
+         *    大小写处理：通常不区分大小写，除非特别指定
+         *    特殊字符：空格和特殊字符也会影响排序
+         */
+        compare: (a, b) => a.name.localeCompare(b.name),
         multiple: 2,
       },
       formItemProps: {
@@ -212,8 +224,19 @@ const PublisherManagement: React.FC = () => {
 
       setModalVisible(false);
       actionRef.current?.reload();
-    } catch (error) {
-      toast.error(editingPublisher ? "更新失败" + error : "创建失败" + error);
+    } catch (error: any) {
+      // 检查是否有errorFields（Ant Design表单错误）
+      if (error.errorFields) {
+        const msg = error.errorFields[0].errors[0];
+        toast.error(editingPublisher ? "更新失败:" + msg : "创建失败:" + msg);
+      }
+      // 检查是否为普通Error对象
+      else if (error.message) {
+        toast.error(editingPublisher ? "更新失败:" + error.message : "创建失败:" + error.message);
+      }
+      else {
+        toast.error(editingPublisher ? "更新失败" : "创建失败");
+      }
     }
   };
 
