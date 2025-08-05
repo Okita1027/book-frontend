@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Card,
@@ -10,6 +10,7 @@ import {
   Typography,
 } from "antd";
 const { Option } = Select;
+const { useForm } = Form;
 import toast from "react-hot-toast";
 import {
   LockOutlined,
@@ -35,9 +36,9 @@ interface RegisterFormData {
  * 用户注册页面
  */
 const Register: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = useForm();
   const navigate = useNavigate();
-  const [emailSuffix, setEmailSuffix] = React.useState("@163.com");
+  const [emailSuffix, setEmailSuffix] = useState("@163.com");
 
   const selectAfter = (
     <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>

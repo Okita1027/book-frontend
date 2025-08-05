@@ -1,6 +1,7 @@
 // API基础配置
 import axios from "axios";
 import toast from "react-hot-toast";
+import { MESSAGES } from "@/constants";
 
 // 自定义Axios实例
 export const apiClient = axios.create({
@@ -20,11 +21,11 @@ apiClient.interceptors.request.use(
         const authData = JSON.parse(authStorage);
         const token = authData.state?.token;
         if (token) {
-            // 添加JWT认证方式：在请求头中添加Authorization字段
+          // JWT：在请求头中添加Authorization字段
           config.headers.Authorization = `Bearer ${token}`;
         }
       } catch (error) {
-        toast.error("认证数据解析错误" + error);
+        toast.error(MESSAGES.ERROR.AUTH_DATA_PARSE_ERROR + error);
         console.error("认证数据解析错误:" + error);
       }
     }
@@ -43,7 +44,7 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // 处理未授权错误
-      toast.error("未授权，请重新登录")
+      toast.error(MESSAGES.ERROR.UNAUTHORIZED)
       localStorage.removeItem("auth-storage");
       window.location.href = "/login";
     }

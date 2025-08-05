@@ -11,10 +11,10 @@ export default defineConfig({
     }
   },
   server: {
-    port: 5173,
+    port: 8000,
     proxy: {
       '/api': {
-        target: 'http://localhost:5158',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         // 允许使用http协议
         secure: false

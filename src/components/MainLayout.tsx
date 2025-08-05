@@ -9,6 +9,8 @@ import {
 } from "@ant-design/icons";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store";
+import { MESSAGES } from "@/constants";
+import type { AuthResponseDTO } from "@/types";
 
 const { Header, Content } = Layout;
 const { Text } = Typography;
@@ -17,10 +19,9 @@ const { Text } = Typography;
  * 主布局组件
  * 提供顶部导航栏和内容区域
  */
-// 用户操作区域组件
 const UserActions: React.FC<{
   isAuthenticated: boolean;
-  user: any;
+  user: AuthResponseDTO;
   onLogin: () => void;
   onRegister: () => void;
   onLogout: () => void;
@@ -61,7 +62,7 @@ const UserActions: React.FC<{
   );
 };
 
-// 在MainLayout中使用
+// 主布局组件
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -93,14 +94,14 @@ const MainLayout: React.FC = () => {
     if (key === "/admin") {
       // 检查登录状态
       if (!isAuthenticated) {
-        toast.error("请先登录");
+        toast.error(MESSAGES.ERROR.AUTH_REQUIRED);
         navigate("/login");
         return;
       }
 
       // 检查管理员权限
       if (user?.role !== "Admin") {
-        toast.error("权限不足");
+        toast.error(MESSAGES.ERROR.PERMISSION_DENIED);
         return;
       }
     }
@@ -150,7 +151,7 @@ const MainLayout: React.FC = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <UserActions
             isAuthenticated={isAuthenticated}
-            user={user}
+            user={user as AuthResponseDTO}
             onLogin={() => navigate("/login")}
             onRegister={() => navigate("/register")}
             onLogout={handleLogout}
@@ -161,7 +162,7 @@ const MainLayout: React.FC = () => {
       {/* 内容区域 */}
       <Content
         style={{
-          marginTop: 64, // Header高度
+          marginTop: 64,
         }}
       >
         {/* 渲染子路由组件 */}

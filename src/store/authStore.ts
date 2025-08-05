@@ -36,7 +36,7 @@ export const useAuthStore = create<AuthState>()(
         const { token, name, role, expiresAt } = authData;
 
         const newState = {
-          token: token || null,
+          token: token || "",
           user: {
             name: name || "",
             role: role || "",

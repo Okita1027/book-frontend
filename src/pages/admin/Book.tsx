@@ -16,9 +16,11 @@ import {
   Row,
   Col,
 } from "antd";
+const { useForm } = Form;
 import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { bookService } from "@/services";
+import { MESSAGES } from "@/constants";
 import type {
   BookVO,
   EditBookDTO,
@@ -41,7 +43,7 @@ interface BookRequestParams extends BaseRequestParams {
 
 const Book: React.FC = () => {
   const actionRef = useRef<ActionType>(null);
-  const [form] = Form.useForm();
+  const [form] = useForm();
   const [editingBook, setEditingBook] = useState<RawBook | null>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -194,7 +196,7 @@ const Book: React.FC = () => {
         </Button>,
         <Popconfirm
           key="delete"
-          title="确定要删除这本图书吗？"
+          title={MESSAGES.CONFIRM.DELETE_BOOK}
           onConfirm={() => handleDelete(record.id)}
           okText="确定"
           cancelText="取消"
@@ -220,7 +222,7 @@ const Book: React.FC = () => {
     const rawBook = rawBooksCache.find((book) => book.id === bookVO.id);
 
     if (!rawBook) {
-      toast.error("获取图书详细信息失败，请刷新页面重试");
+      toast.error(MESSAGES.ERROR.GET_BOOK_DETAIL_FAILED);
       return;
     }
 
@@ -320,7 +322,7 @@ const Book: React.FC = () => {
         total: filteredData.length,
       };
     } catch (error) {
-      toast.error("获取图书列表失败" + error);
+      toast.error(MESSAGES.ERROR.GET_BOOK_LIST_FAILED + error);
       return {
         data: [],
         success: false,
@@ -454,7 +456,7 @@ const Book: React.FC = () => {
           selectedRowKeys.length > 0 && (
             <Popconfirm
               key="batchDelete"
-              title={`确定要删除选中的 ${selectedRowKeys.length} 本图书吗？`}
+              title={MESSAGES.CONFIRM.DELETE_SELECTED_BOOKS(selectedRowKeys.length)}
               onConfirm={handleBatchDelete}
               okText="确定"
               cancelText="取消"

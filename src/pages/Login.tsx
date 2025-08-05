@@ -1,12 +1,14 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {Button, Card, Form, Input, Select, Space, Typography} from "antd";
+import { Button, Card, Form, Input, Select, Space, Typography } from "antd";
 const { Option } = Select;
+const { useForm } = Form;
 import toast from "react-hot-toast";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { userService } from "@/services";
 import { useAuthStore } from "@/store";
+import { MESSAGES } from "@/constants";
 import type { AuthResponseDTO } from "@/types";
 import "./Login.scss";
 
@@ -25,17 +27,17 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuthStore();
-  const [form] = Form.useForm<LoginForm>(); // 获取重定向路径
+  const [form] = useForm<LoginForm>(); // 获取重定向路径
   const from = location.state?.from?.pathname || "/";
 
   const [emailSuffix, setEmailSuffix] = React.useState("@163.com");
 
   const selectAfter = (
-      <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>
-        <Option value="@163.com">@163.com</Option>
-        <Option value="@qq.com">@qq.com</Option>
-        <Option value="@126.com">@126.com</Option>
-      </Select>
+    <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>
+      <Option value="@163.com">@163.com</Option>
+      <Option value="@qq.com">@qq.com</Option>
+      <Option value="@126.com">@126.com</Option>
+    </Select>
   );
 
   // 登录mutation
@@ -44,13 +46,13 @@ const Login: React.FC = () => {
       userService.login({ email, password }),
     onSuccess: (data: AuthResponseDTO) => {
       console.log("登录成功，收到的数据:", data);
-      toast.success("登录成功");
+      toast.success(MESSAGES.SUCCESS.LOGIN);
       login(data);
       navigate(from, { replace: true });
     },
     onError: (error: Error) => {
       console.error("登录失败:", error);
-      toast.error(error.message || "用户名或密码错误");
+      toast.error(error.message || MESSAGES.ERROR.LOGIN_FAILED);
     },
   });
 
@@ -84,8 +86,11 @@ const Login: React.FC = () => {
               <Form.Item
                 name="email"
                 rules={[
-                  { required: true, message: "请输入邮箱地址" },
-                  // { type: "email", message: "请输入有效的邮箱地址" },
+                  {
+                    required: true,
+                    message: MESSAGES.VALIDATION.EMAIL_REQUIRED,
+                  },
+                  // { type: "email", message: MESSAGES.VALIDATION.EMAIL_INVALID },
                 ]}
                 className="form-item"
               >
@@ -100,8 +105,11 @@ const Login: React.FC = () => {
               <Form.Item
                 name="password"
                 rules={[
-                  { required: true, message: "请输入密码" },
-                  { min: 6, message: "密码至少6位字符" },
+                  {
+                    required: true,
+                    message: MESSAGES.VALIDATION.PASSWORD_REQUIRED,
+                  },
+                  { min: 6, message: MESSAGES.VALIDATION.PASSWORD_MIN_LENGTH },
                 ]}
                 className="form-item"
               >
@@ -119,7 +127,7 @@ const Login: React.FC = () => {
                   loading={loginMutation.isPending}
                   className="login-button"
                 >
-                  {loginMutation.isPending ? "登录中..." : "登录"}
+                  {loginMutation.isPending ? MESSAGES.LOADING.LOGIN : "登录"}
                 </Button>
               </Form.Item>
             </Form>

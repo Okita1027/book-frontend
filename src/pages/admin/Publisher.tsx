@@ -5,9 +5,11 @@ import {
   ProTable,
 } from "@ant-design/pro-components";
 import { Button, Form, Input, Modal, Popconfirm } from "antd";
+const { useForm } = Form;
 import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { publisherService } from "@/services";
+import { MESSAGES } from "@/constants";
 import type { BaseRequestParams, Publisher } from "@/types";
 import "./Publisher.scss";
 
@@ -18,7 +20,7 @@ interface PublisherRequestParams extends BaseRequestParams {
 
 const Publisher: React.FC = () => {
   const actionRef = useRef<ActionType>(null); // 表格操作引用
-  const [form] = Form.useForm(); // 模态对话框中的表单数据
+  const [form] = useForm(); // 模态对话框中的表单数据
   const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(); // 新增/编辑状态
   const [modalVisible, setModalVisible] = useState(false); // 模态对话框的显示状态
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); // 选中行的ID
@@ -55,7 +57,7 @@ const Publisher: React.FC = () => {
         rules: [
           {
             required: true,
-            message: "请输入出版社名称",
+            message: MESSAGES.VALIDATION.PUBLISHER_NAME_REQUIRED,
           },
         ],
       },
@@ -109,7 +111,7 @@ const Publisher: React.FC = () => {
         </Button>,
         <Popconfirm
           key="delete"
-          title="确定要删除这个出版社吗？"
+          title={MESSAGES.CONFIRM.DELETE_PUBLISHER}
           onConfirm={() => handleDelete(record.id)}
           okText="确定"
           cancelText="取消"
@@ -168,7 +170,7 @@ const Publisher: React.FC = () => {
         total: filteredData.length,
       };
     } catch (error) {
-      toast.error("获取出版社列表失败" + error);
+      toast.error(MESSAGES.ERROR.GET_PUBLISHER_LIST_FAILED + error);
       return {
         data: [],
         success: false,
@@ -273,7 +275,7 @@ const Publisher: React.FC = () => {
           selectedRowKeys.length > 0 && (
             <Popconfirm
               key="batchDelete"
-              title={`确定要删除选中的 ${selectedRowKeys.length} 个出版社吗?`}
+              title={MESSAGES.CONFIRM.DELETE_SELECTED_PUBLISHERS(selectedRowKeys.length)}
               onConfirm={handleBatchDelete}
               okText="确定"
               cancelText="取消"
