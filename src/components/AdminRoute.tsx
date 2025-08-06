@@ -27,6 +27,10 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
       hasShownToast.current = true;
       toast.error("请先登录");
     }
+    /**
+     * state={{ from: location }} : 传递原始位置信息
+     * replace : 替换浏览器的历史记录（避免后退死循环）
+     */
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

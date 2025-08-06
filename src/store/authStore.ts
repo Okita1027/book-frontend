@@ -21,7 +21,7 @@ interface AuthState {
   isUser: () => boolean;
 }
 
-// 创建认证store
+// 创建认证store,其他组件如果使用了useAuthStore，则认为是该状态的订阅者；当该状态发生变化时，其他订阅者将收到更新，然后重新渲染组件。
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
-      // 检查token是否过期
+      // 检查JWT令牌是否过期
       checkTokenExpiry: () => {
         const { user } = get();
         console.log("checkTokenExpiry - user:", user);
@@ -115,7 +115,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage", // 本地存储的key名称
-      // 持久化登录状态
+      // 持久化登录状态（Zustand中的persist中间件）
       partialize: (state) => ({
         token: state.token,
         user: state.user,

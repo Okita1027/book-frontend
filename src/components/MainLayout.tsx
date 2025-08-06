@@ -68,6 +68,7 @@ const MainLayout: React.FC = () => {
   // 处理登出
   const handleLogout = () => {
     logout();
+    // 如果是在后台管理系统中登录，则下面2行代码不会执行，详情可以看<AdminRoute>组件
     toast.success("已退出登录");
     navigate("/");
   };
