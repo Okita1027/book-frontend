@@ -32,14 +32,12 @@ const UserActions: React.FC<{
         <Button
           type="default"
           onClick={onLogin}
-          style={{ borderRadius: 6 }}
         >
           登录
         </Button>
         <Button
           type="primary"
           onClick={onRegister}
-          style={{ borderRadius: 6 }}
         >
           注册
         </Button>
@@ -54,7 +52,6 @@ const UserActions: React.FC<{
         type="primary"
         icon={<LogoutOutlined />}
         onClick={onLogout}
-        style={{ borderRadius: 6 }}
       >
         退出登录
       </Button>

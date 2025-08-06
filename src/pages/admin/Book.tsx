@@ -263,6 +263,9 @@ const Book: React.FC = () => {
   // 行选择配置
   const rowSelection = {
     selectedRowKeys,
+    onChange: (keys: React.Key[]) => {
+      setSelectedRowKeys(keys);
+    },
   };
 
   // 获取图书列表

@@ -67,7 +67,7 @@ const App: React.FC = () => {
           }}
         />
         
-        {/* 路由配置 */}
+        {/* 路由组件 */}
         <RouterProvider router={router} />
 
         {/* 开发环境下显示React Query开发工具 */}

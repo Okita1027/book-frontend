@@ -5,7 +5,7 @@ import {
   ProTable,
 } from "@ant-design/pro-components";
 import { Button, Form, Input, Modal, Popconfirm } from "antd";
-const { useForm } = Form;
+const { useForm } = Form;A
 import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { publisherService } from "@/services";

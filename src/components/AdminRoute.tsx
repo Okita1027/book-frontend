@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import toast from 'react-hot-toast';
 import { useAuthStore } from "@/store";
@@ -15,10 +15,18 @@ interface AdminRouteProps {
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
+  const hasShownToast = useRef(false);
 
   // 检查是否已登录
   if (!isAuthenticated) {
-    toast.error("请先登录");
+    /**
+     * 因为使用了<Strict Mode>会导致双重渲染，
+     * 所以这里使用ref来记录是否已经显示过toast，避免出现重复显示
+     */
+    if (!hasShownToast.current) {
+      hasShownToast.current = true;
+      toast.error("请先登录");
+    }
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

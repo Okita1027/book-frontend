@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import type { MenuProps } from 'antd';
-import { useAppStore } from '../store';
+import { useAppStore } from '@/store';
 import './AdminLayout.scss';
 
 const { Sider, Content } = Layout;
