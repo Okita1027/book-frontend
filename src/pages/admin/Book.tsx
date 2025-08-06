@@ -615,32 +615,15 @@ const Book: React.FC = () => {
                 rules={[
                   { type: "number", min: 0, message: "库存数量不能小于0" },
                 ]}
-                // dependencies={["available"]}
               >
                 <InputNumber
                   placeholder="请输入库存数量"
                   style={{ width: "100%" }}
                   min={0}
                   defaultValue={0}
-                  // onChange={() => {
-                  //   // 当库存数量变化时，重新验证可借数量
-                  //   form.validateFields(["available"]);
-                  // }}
                 />
               </Form.Item>
             </Col>
-            {/* <Col span={12}>
-              <Form.Item
-                name="available"
-                label="可借数量"
-              >
-                <InputNumber
-                  placeholder="请输入可借数量"
-                  style={{ width: "100%" }}
-                  disabled
-                />
-              </Form.Item>
-            </Col> */}
           </Row>
         </Form>
       </Modal>

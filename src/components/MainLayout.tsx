@@ -26,6 +26,7 @@ const UserActions: React.FC<{
   onRegister: () => void;
   onLogout: () => void;
 }> = ({ isAuthenticated, user, onLogin, onRegister, onLogout }) => {
+  // 未登录时显示 注册 按钮
   if (!isAuthenticated) {
     return (
       <Space>
@@ -45,6 +46,7 @@ const UserActions: React.FC<{
     );
   }
 
+  // 已登录时显示 退出登录 按钮
   return (
     <Space size="large">
       <Text style={{ color: "#666" }}>欢迎，{user?.name}</Text>
@@ -68,9 +70,12 @@ const MainLayout: React.FC = () => {
   // 处理登出
   const handleLogout = () => {
     logout();
-    // 如果是在后台管理系统中登录，则下面2行代码不会执行，详情可以看<AdminRoute>组件
-    toast.success("已退出登录");
-    navigate("/");
+    if (location.pathname.startsWith("/admin")) {
+      navigate("/login");
+    } else {
+      toast.success("已退出登录");
+      navigate("/");
+    }
   };
 
   // 顶部菜单项

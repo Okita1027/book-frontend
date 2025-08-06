@@ -1,16 +1,16 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Card, Form, Input, Select, Space, Typography } from "antd";
-const { Option } = Select;
-const { useForm } = Form;
-import toast from "react-hot-toast";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
+import EmailInput from "@/components/form/EmailInput";
+import PasswordInput from "@/components/form/PasswordInput";
+import { MESSAGES } from "@/constants";
 import { userService } from "@/services";
 import { useAuthStore } from "@/store";
-import { MESSAGES } from "@/constants";
 import type { AuthResponseDTO } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+import { Button, Card, Form, Space, Typography } from "antd";
+import React from "react";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Login.scss";
+const { useForm } = Form;
 
 const { Title, Text } = Typography;
 
@@ -31,14 +31,6 @@ const Login: React.FC = () => {
   const from = location.state?.from?.pathname || "/";
 
   const [emailSuffix, setEmailSuffix] = React.useState("@163.com");
-
-  const selectAfter = (
-    <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>
-      <Option value="@163.com">@163.com</Option>
-      <Option value="@qq.com">@qq.com</Option>
-      <Option value="@126.com">@126.com</Option>
-    </Select>
-  );
 
   // 登录mutation
   const loginMutation = useMutation({
@@ -77,48 +69,17 @@ const Login: React.FC = () => {
             {/* 登录表单 */}
             <Form
               form={form}
-              name="login"
               onFinish={handleSubmit}
-              autoComplete="off"
               size="large"
               className="login-form"
             >
-              <Form.Item
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    message: MESSAGES.VALIDATION.EMAIL_REQUIRED,
-                  },
-                  // { type: "email", message: MESSAGES.VALIDATION.EMAIL_INVALID },
-                ]}
+              <EmailInput
+                emailSuffix={emailSuffix}
+                onSuffixChange={setEmailSuffix}
                 className="form-item"
-              >
-                <Input
-                  addonAfter={selectAfter}
-                  prefix={<UserOutlined />}
-                  placeholder="邮箱地址"
-                  className="form-input"
-                />
-              </Form.Item>
+              />
 
-              <Form.Item
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: MESSAGES.VALIDATION.PASSWORD_REQUIRED,
-                  },
-                  { min: 6, message: MESSAGES.VALIDATION.PASSWORD_MIN_LENGTH },
-                ]}
-                className="form-item"
-              >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="密码"
-                  className="form-input"
-                />
-              </Form.Item>
+              <PasswordInput className="form-item" />
 
               <Form.Item className="form-item">
                 <Button
