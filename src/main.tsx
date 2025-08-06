@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "@/App";
 import "./index.css";
 import { StrictMode } from "react";
+import 'virtual:uno.css'
 
 // 创建根节点并渲染应用
 const root = createRoot(document.getElementById("root")!);

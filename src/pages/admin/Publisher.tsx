@@ -24,6 +24,7 @@ const Publisher: React.FC = () => {
   const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(); // 新增/编辑状态
   const [modalVisible, setModalVisible] = useState(false); // 模态对话框的显示状态
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); // 选中行的ID
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRows, setSelectedRows] = useState<Publisher[]>([]); // 选中行的完整数据
 
   // 表格列定义
