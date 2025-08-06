@@ -12,6 +12,7 @@ const BookBrowse = lazy(() => import('@/pages/BookBrowse'));
 // 后台管理页面懒加载
 const PublisherManagement = lazy(() => import('@/pages/admin/Publisher'));
 const BookManagement = lazy(() => import('@/pages/admin/Book'));
+const AuthorManagement = lazy(() => import('@/pages/admin/Author'));
 
 // 创建带有Suspense的懒加载组件包装器
 const withSuspense = (Component: React.ComponentType) => (
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
           {
             path: 'books',
             element: withSuspense(BookManagement)
+          },
+          {
+            path: 'authors',
+            element: withSuspense(AuthorManagement)
           }
         ]
       }
