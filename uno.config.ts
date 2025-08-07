@@ -3,7 +3,22 @@ import { defineConfig, presetWind3 } from "unocss";
 export default defineConfig({
   presets: [presetWind3()],
   rules: [
-    // 自定义规则
+    // 简单的自定义规则演示
+    ['m-1', { margin: '1px' }],
+    ['p-1', { padding: '1px' }],
+
+    // 1. 动态间距规则
+    [/^m-(\d+)$/, (match) => ({ margin: `${match[1]}px` })],
+    [/^p-(\d+)$/, (match) => ({ padding: `${match[1]}px` })],
+    
+    // 2. 十六进制背景色规则
+    [/^bg-hex-([0-9a-fA-F]{6})$/, (match) => ({ 'background-color': `#${match[1]}` })],
+    
+    // 3. 渐变边框效果
+    ['gradient-border', {
+      'border': '2px solid transparent',
+      'background': 'linear-gradient(white, white) padding-box, linear-gradient(45deg, #667eea, #764ba2) border-box'
+    }]
   ],
   shortcuts: {
     // 管理页面容器

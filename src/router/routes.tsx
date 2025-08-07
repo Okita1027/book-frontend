@@ -8,6 +8,7 @@ import "./routes.scss";
 const Login = lazy(() => import("@/pages/Login"));
 const Register = lazy(() => import("@/pages/Register"));
 const BookBrowse = lazy(() => import("@/pages/BookBrowse"));
+const UnoDemo = lazy(() => import("@/pages/UnoDemo"));
 
 // 后台管理页面懒加载
 const PublisherManagement = lazy(() => import("@/pages/admin/Publisher"));
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: withSuspense(BookBrowse),
+      },
+      {
+        path: "uno-demo",
+        element: withSuspense(UnoDemo),
       },
       // 后台管理系统（嵌套在MainLayout中，受AdminRoute保护）
       {

@@ -90,6 +90,11 @@ const MainLayout: React.FC = () => {
       label: "后台管理",
       icon: <ControlOutlined />,
     },
+    {
+      key: "/uno-demo",
+      label: "Uno 演示",
+      icon: <ControlOutlined />,
+    }
   ];
 
   // 处理菜单点击
@@ -128,14 +133,15 @@ const MainLayout: React.FC = () => {
         }}
       >
         {/* 左侧：Logo和导航菜单 */}
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
           <div
             style={{
-              fontSize: "20px",
+              fontSize: "18px",
               fontWeight: "bold",
               color: "#1890ff",
-              marginRight: 32,
+              marginRight: 24,
               cursor: "pointer", // 鼠标悬停显示手型
+              whiteSpace: "nowrap", // 防止换行
             }}
             onClick={() => navigate("/")}
           >
@@ -147,6 +153,11 @@ const MainLayout: React.FC = () => {
             selectedKeys={[location.pathname]}
             items={topMenuItems}
             onClick={handleMenuClick}
+            style={{
+              flex: 1,
+              border: "none",
+              backgroundColor: "transparent"
+            }}
           />
         </div>
 
