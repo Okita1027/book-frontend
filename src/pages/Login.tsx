@@ -1,6 +1,4 @@
-import EmailInput from "@/components/form/EmailInput";
-import PasswordInput from "@/components/form/PasswordInput";
-import SubmitButton from "@/components/form/SubmitButton";
+import { EmailInput, PasswordInput, SubmitButton } from "@/components/form/index";
 import { MESSAGES } from "@/constants";
 import { userService } from "@/services";
 import { useAuthStore } from "@/store";
@@ -60,15 +58,15 @@ const Login: React.FC = () => {
     <div className="login-container">
       <Card className="login-card">
         <div className="card-body">
-          <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Space direction="vertical" >
             {/* 标题 */}
             <div className="login-title">
               <Title level={2}>图书管理系统</Title>
               <Text type="secondary">请输入您的邮箱和密码以进行登录</Text>
             </div>
-
             {/* 登录表单 */}
             <Form
+              name="login"
               form={form}
               onFinish={handleSubmit}
               size="large"
@@ -79,9 +77,7 @@ const Login: React.FC = () => {
                 onSuffixChange={setEmailSuffix}
                 className="form-item"
               />
-
               <PasswordInput className="form-item" />
-
               <SubmitButton
                 preset="login"
                 className="login-button"

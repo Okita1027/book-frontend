@@ -1,4 +1,4 @@
-import { UserOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import type { FormItemProps } from "antd";
 import { Form, Input, Select } from "antd";
 import React from "react";
@@ -40,7 +40,7 @@ const EmailInput: React.FC<EmailInputProps> = ({
     >
       <Input
         addonAfter={selectAfter}
-        prefix={<UserOutlined />}
+        prefix={<MailOutlined />}
         placeholder={placeholder}
         className={className}
       />

@@ -1,27 +1,13 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Card,
-  Divider,
-  Form,
-  Input,
-  Select,
-  Space,
-  Typography,
-} from "antd";
-const { Option } = Select;
-const { useForm } = Form;
-import toast from "react-hot-toast";
-import {
-  LockOutlined,
-  MailOutlined,
-  UserAddOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { UsernameInput, EmailInput, PasswordInput, SubmitButton } from "@/components/form";
 import { userService } from "@/services";
+import { UserAddOutlined } from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
+import { Button, Card, Divider, Form, Space, Typography } from "antd";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import "./Register.scss";
+const { useForm } = Form;
 
 const { Title, Text } = Typography;
 
@@ -39,14 +25,6 @@ const Register: React.FC = () => {
   const [form] = useForm();
   const navigate = useNavigate();
   const [emailSuffix, setEmailSuffix] = useState("@163.com");
-
-  const selectAfter = (
-    <Select defaultValue="@163.com" onChange={(value) => setEmailSuffix(value)}>
-      <Option value="@163.com">@163.com</Option>
-      <Option value="@qq.com">@qq.com</Option>
-      <Option value="@126.com">@126.com</Option>
-    </Select>
-  );
 
   // 注册请求
   const registerMutation = useMutation({
@@ -81,71 +59,31 @@ const Register: React.FC = () => {
             <Title level={2}>用户注册</Title>
             <Text type="secondary">创建您的账户，开始阅读之旅</Text>
           </div>
-
           {/* 注册表单 */}
           <Form
             form={form}
             name="register"
             onFinish={handleSubmit}
-            layout="vertical"
             size="large"
             className="register-form"
           >
-            <Form.Item
-              name="name"
-              label="用户名"
-              rules={[
-                { required: true, message: "请输入用户名" },
-                { min: 2, message: "用户名至少2个字符" },
-                { max: 20, message: "用户名最多20个字符" },
-              ]}
+            <UsernameInput className="form-item" />
+            <EmailInput
+              emailSuffix={emailSuffix}
+              onSuffixChange={setEmailSuffix}
               className="form-item"
-            >
-              <Input
-                prefix={<UserOutlined />}
-                placeholder="请输入用户名"
-                className="form-input"
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="email"
-              label="邮箱"
-              rules={[
-                { required: true, message: "请输入邮箱" },
-              ]}
-              className="form-item"
-            >
-              <Input
-                addonAfter={selectAfter}
-                prefix={<MailOutlined />}
-                placeholder="请输入邮箱"
-                className="form-input"
-              />
-            </Form.Item>
-
-            <Form.Item
+            />
+            <PasswordInput
               name="password"
-              label="密码"
-              rules={[
-                { required: true, message: "请输入密码" },
-                { min: 6, message: "密码至少6个字符" },
-              ]}
               className="form-item"
-            >
-              <Input.Password
-                prefix={<LockOutlined />}
-                placeholder="请输入密码"
-                className="form-input"
-              />
-            </Form.Item>
-
-            <Form.Item
+            />
+            <PasswordInput
               name="confirmPassword"
-              label="确认密码"
+              className="form-item"
+              placeholder="请输入确认密码"
               dependencies={["password"]}
               rules={[
-                { required: true, message: "请确认密码" },
+                { required: true, message: "请输入确认密码" },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || getFieldValue("password") === value) {
@@ -155,25 +93,12 @@ const Register: React.FC = () => {
                   },
                 }),
               ]}
-              className="form-item"
-            >
-              <Input.Password
-                prefix={<LockOutlined />}
-                placeholder="请再次输入密码"
-                className="form-input"
-              />
-            </Form.Item>
-
-            <Form.Item className="form-item">
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={registerMutation.isPending}
-                className="register-button"
-              >
-                注册
-              </Button>
-            </Form.Item>
+            />
+            <SubmitButton
+              preset="register"
+              loading={registerMutation.isPending}
+              className="register-button"
+            />
           </Form>
 
           <Divider className="divider" />
