@@ -1,11 +1,12 @@
 import EmailInput from "@/components/form/EmailInput";
 import PasswordInput from "@/components/form/PasswordInput";
+import SubmitButton from "@/components/form/SubmitButton";
 import { MESSAGES } from "@/constants";
 import { userService } from "@/services";
 import { useAuthStore } from "@/store";
 import type { AuthResponseDTO } from "@/types";
 import { useMutation } from "@tanstack/react-query";
-import { Button, Card, Form, Space, Typography } from "antd";
+import { Card, Form, Space, Typography } from "antd";
 import React from "react";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -81,16 +82,11 @@ const Login: React.FC = () => {
 
               <PasswordInput className="form-item" />
 
-              <Form.Item className="form-item">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loginMutation.isPending}
-                  className="login-button"
-                >
-                  {loginMutation.isPending ? MESSAGES.LOADING.LOGIN : "登录"}
-                </Button>
-              </Form.Item>
+              <SubmitButton
+                preset="login"
+                className="login-button"
+                loading={loginMutation.isPending}
+              />
             </Form>
           </Space>
         </div>
