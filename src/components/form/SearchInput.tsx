@@ -6,7 +6,7 @@ const { Text } = Typography;
 
 export interface SearchInputProps extends Omit<InputProps, "onChange"> {
   label: string;
-  valueRef: React.MutableRefObject<string>;
+  valueRef: React.RefObject<{ value: string }>;
   onSearch?: () => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
@@ -30,9 +30,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <Input
         allowClear
         size="large"
-        defaultValue={valueRef.current}
+        defaultValue={valueRef.current?.value}
         onChange={(e) => {
-          valueRef.current = e.target.value;
+          if (valueRef.current) {
+            valueRef.current.value = e.target.value;
+          }
         }}
         onPressEnter={onSearch}
         onKeyDown={onKeyDown}

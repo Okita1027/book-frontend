@@ -34,13 +34,13 @@ const { Title, Text } = Typography;
  */
 const BookBrowse: React.FC = () => {
   // 各个搜索框中的值
-  const title = useRef<string>("");
-  const isbn = useRef<string>("");
-  const authorName = useRef<string>("");
-  const categoryName = useRef<string>("");
-  const publisherName = useRef<string>("");
-  const publishedDateBegin = useRef<string>("");
-  const publishedDateEnd = useRef<string>("");
+  const title = useRef<{ value: string }>({ value: "" });
+  const isbn = useRef<{ value: string }>({ value: "" });
+  const authorName = useRef<{ value: string }>({ value: "" });
+  const categoryName = useRef<{ value: string }>({ value: "" });
+  const publisherName = useRef<{ value: string }>({ value: "" });
+  const publishedDateBegin = useRef<{ value: string }>({ value: "" });
+  const publishedDateEnd = useRef<{ value: string }>({ value: "" });
 
   // 实际搜索参数
   const [searchParams, setSearchParams] = useState<BookSearchParams>({});
@@ -48,7 +48,9 @@ const BookBrowse: React.FC = () => {
   // 使用无限查询获取图书数据
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
+      // 包含搜索参数，参数变化时自动重新查询
       queryKey: ["books-infinite", searchParams],
+      // 查询函数，接受pageParam作为页码
       queryFn: ({ pageParam = 1 }) => {
         const paginationParams: PaginationRequest & BookSearchParams = {
           pageIndex: pageParam,
@@ -57,11 +59,13 @@ const BookBrowse: React.FC = () => {
         };
         return bookService.searchPaginated(paginationParams);
       },
+      // 计算下一页参数的逻辑
       getNextPageParam: (lastPage) => {
         const { pageIndex, pageSize, total } = lastPage;
         const totalPages = Math.ceil(total / pageSize);
         return pageIndex < totalPages ? pageIndex + 1 : undefined;
       },
+      // 初始页码为1
       initialPageParam: 1,
     });
 
@@ -78,18 +82,18 @@ const BookBrowse: React.FC = () => {
   const handleSearch = () => {
     // 过滤掉空值，只传递有值的参数
     const params: BookSearchParams = {};
-    if (title.current?.trim()) params.title = title.current.trim();
-    if (isbn.current?.trim()) params.isbn = isbn.current.trim();
-    if (authorName.current?.trim())
-      params.authorName = authorName.current.trim();
-    if (categoryName.current?.trim())
-      params.categoryName = categoryName.current.trim();
-    if (publisherName.current?.trim())
-      params.publisherName = publisherName.current.trim();
-    if (publishedDateBegin.current?.trim())
-      params.publishedDateBegin = publishedDateBegin.current.trim();
-    if (publishedDateEnd.current?.trim())
-      params.publishedDateEnd = publishedDateEnd.current.trim();
+    if (title.current?.value?.trim()) params.title = title.current.value.trim();
+    if (isbn.current?.value?.trim()) params.isbn = isbn.current.value.trim();
+    if (authorName.current?.value?.trim())
+      params.authorName = authorName.current.value.trim();
+    if (categoryName.current?.value?.trim())
+      params.categoryName = categoryName.current.value.trim();
+    if (publisherName.current?.value?.trim())
+      params.publisherName = publisherName.current.value.trim();
+    if (publishedDateBegin.current?.value?.trim())
+      params.publishedDateBegin = publishedDateBegin.current.value.trim();
+    if (publishedDateEnd.current?.value?.trim())
+      params.publishedDateEnd = publishedDateEnd.current.value.trim();
 
     setSearchParams(params);
   };
@@ -97,8 +101,13 @@ const BookBrowse: React.FC = () => {
   // 滚动加载更多数据
   const handleScroll = useCallback(() => {
     if (
+      /**
+       * window.innerHeight:浏览器窗口的可视区域高度（不包括工具栏、地址栏等）
+       * document.documentElement.scrollTop:文档当前滚动的垂直距离（即滚动条滚动的高度）
+       * document.documentElement.offsetHeight:文档的总高度（包括可见和不可见的部分）
+       */
       window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 1000 && // 提前1000px开始加载
+        document.documentElement.offsetHeight - 500 && // 提前500px开始加载
       hasNextPage &&
       !isFetchingNextPage
     ) {
@@ -118,13 +127,13 @@ const BookBrowse: React.FC = () => {
   // 重置搜索
   const handleReset = () => {
     // 重置所有值
-    title.current = "";
-    isbn.current = "";
-    authorName.current = "";
-    categoryName.current = "";
-    publisherName.current = "";
-    publishedDateBegin.current = "";
-    publishedDateEnd.current = "";
+    title.current.value = "";
+    isbn.current.value = "";
+    authorName.current.value = "";
+    categoryName.current.value = "";
+    publisherName.current.value = "";
+    publishedDateBegin.current.value = "";
+    publishedDateEnd.current.value = "";
 
     // 通过改变key值强制重新渲染搜索表单
     setResetKey((prev) => prev + 1);

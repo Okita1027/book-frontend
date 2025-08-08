@@ -7,7 +7,7 @@ const { Text } = Typography;
 
 export interface SearchDatePickerProps extends Omit<DatePickerProps, "onChange" | "defaultValue"> {
   label: string;
-  valueRef: React.MutableRefObject<string>;
+  valueRef: React.RefObject<{ value: string }>;
 }
 
 /**
@@ -27,9 +27,11 @@ const SearchDatePicker: React.FC<SearchDatePickerProps> = ({
       <DatePicker
         allowClear
         size="large"
-        defaultValue={valueRef.current ? dayjs(valueRef.current) : null}
+        defaultValue={valueRef.current?.value ? dayjs(valueRef.current.value) : null}
         onChange={(date) => {
-          valueRef.current = date ? date.format("YYYY-MM-DD") : "";
+          if (valueRef.current) {
+            valueRef.current.value = date ? date.format("YYYY-MM-DD") : "";
+          }
         }}
         className="search-datepicker"
         {...datePickerProps}
