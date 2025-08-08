@@ -116,4 +116,21 @@ $transition: all 0.3s ease;
       font-size: 12px;
     }
   }
+
+  // 加载指示器样式
+  &-loading-indicator {
+    text-align: center;
+    padding: 20px;
+
+    .loading-text {
+      margin-top: 10px;
+    }
+  }
+
+  // 加载完成提示样式
+  &-load-complete {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+  }
 }

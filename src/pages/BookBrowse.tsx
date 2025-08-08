@@ -1,18 +1,7 @@
-import React, { useState, useRef } from "react";
-import dayjs from "dayjs";
-import {
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Empty,
-  Input,
-  Row,
-  Space,
-  Spin,
-  Tag,
-  Typography,
-} from "antd";
+import { SearchDatePicker, SearchInput } from "@/components/form";
+import type { BookSearchParams } from "@/services";
+import { bookService } from "@/services";
+import type { PaginationRequest } from "@/types";
 import {
   BookOutlined,
   CalendarOutlined,
@@ -21,10 +10,20 @@ import {
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import type { BookSearchParams } from "@/services";
-import { bookService } from "@/services";
-import type { BookVO } from "@/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  Button,
+  Card,
+  Col,
+  Empty,
+  Row,
+  Space,
+  Spin,
+  Tag,
+  Typography,
+} from "antd";
+import dayjs from "dayjs";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./BookBrowse.scss";
 
 const { Title, Text } = Typography;
@@ -46,11 +45,34 @@ const BookBrowse: React.FC = () => {
   // 实际搜索参数
   const [searchParams, setSearchParams] = useState<BookSearchParams>({});
 
-  // 获取图书数据
-  const { data: books = [], isLoading } = useQuery<BookVO[]>({
-    queryKey: ["books", searchParams],
-    queryFn: () => bookService.search(searchParams),
-  });
+  // 使用无限查询获取图书数据
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["books-infinite", searchParams],
+      queryFn: ({ pageParam = 1 }) => {
+        const paginationParams: PaginationRequest & BookSearchParams = {
+          pageIndex: pageParam,
+          pageSize: 12,
+          ...searchParams,
+        };
+        return bookService.searchPaginated(paginationParams);
+      },
+      getNextPageParam: (lastPage) => {
+        const { pageIndex, pageSize, total } = lastPage;
+        const totalPages = Math.ceil(total / pageSize);
+        return pageIndex < totalPages ? pageIndex + 1 : undefined;
+      },
+      initialPageParam: 1,
+    });
+
+  /**
+   * 合并所有页面的图书数据
+   * flatMap 是数组的一个方法，它结合了 map 和 flat 的功能：
+   * 1. map阶段 ：对数组中的每个元素执行回调函数
+   * 2. flat阶段 ：将结果扁平化（降维）
+   */
+  const books = data?.pages.flatMap((page) => page.items) ?? [];
+  const totalBooks = data?.pages[0]?.total ?? 0;
 
   // 执行搜索
   const handleSearch = () => {
@@ -72,6 +94,24 @@ const BookBrowse: React.FC = () => {
     setSearchParams(params);
   };
 
+  // 滚动加载更多数据
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 1000 && // 提前1000px开始加载
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // 添加滚动监听
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
   // 用于强制重新渲染搜索表单的状态
   const [resetKey, setResetKey] = useState(0);
 
@@ -85,10 +125,10 @@ const BookBrowse: React.FC = () => {
     publisherName.current = "";
     publishedDateBegin.current = "";
     publishedDateEnd.current = "";
-    
+
     // 通过改变key值强制重新渲染搜索表单
-    setResetKey(prev => prev + 1);
-    
+    setResetKey((prev) => prev + 1);
+
     setSearchParams({});
   };
 
@@ -109,129 +149,70 @@ const BookBrowse: React.FC = () => {
         <div className="search-body" key={resetKey}>
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>图书名称</Text>
-              </div>
-              <Input
+              <SearchInput
+                label="图书名称"
                 placeholder="请输入图书名称"
-                allowClear
-                size="large"
-                defaultValue={title.current}
-                onChange={(e) => {
-                  title.current = e.target.value;
-                }}
-                onPressEnter={handleSearch}
-                className="search-input"
+                valueRef={title}
+                onSearch={handleSearch}
               />
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>作者</Text>
-              </div>
-              <Input
+              <SearchInput
+                label="作者"
                 placeholder="请输入作者名称"
-                allowClear
-                size="large"
-                defaultValue={authorName.current}
-                onChange={(e) => {
-                  authorName.current = e.target.value;
-                }}
-                onPressEnter={handleSearch}
-                className="search-input"
+                valueRef={authorName}
+                onSearch={handleSearch}
               />
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>类别名称</Text>
-              </div>
-              <Input
+              <SearchInput
+                label="类别名称"
                 placeholder="请输入类别名称"
-                allowClear
-                size="large"
-                defaultValue={categoryName.current}
-                onChange={(e) => {
-                  categoryName.current = e.target.value;
-                }}
-                onPressEnter={handleSearch}
-                className="search-input"
+                valueRef={categoryName}
+                onSearch={handleSearch}
               />
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>出版社名称</Text>
-              </div>
-              <Input
+              <SearchInput
+                label="出版社名称"
                 placeholder="请输入出版社名称"
-                allowClear
-                size="large"
-                defaultValue={publisherName.current}
-                onChange={(e) => {
-                  publisherName.current = e.target.value;
-                }}
-                onPressEnter={handleSearch}
-                className="search-input"
+                valueRef={publisherName}
+                onSearch={handleSearch}
               />
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>ISBN</Text>
-              </div>
-              <Input
+              <SearchInput
+                label="ISBN"
                 placeholder="请输入ISBN"
-                allowClear
-                size="large"
-                defaultValue={isbn.current}
-                // ISBN只允许输入数字,最长13位
+                valueRef={isbn}
+                onSearch={handleSearch}
                 maxLength={13}
                 onKeyDown={(e) => {
-                  if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Tab') {
+                  if (
+                    !/[0-9]/.test(e.key) &&
+                    e.key !== "Backspace" &&
+                    e.key !== "Delete" &&
+                    e.key !== "ArrowLeft" &&
+                    e.key !== "ArrowRight" &&
+                    e.key !== "Tab"
+                  ) {
                     e.preventDefault();
                   }
                 }}
-                onChange={(e) => {
-                  isbn.current = e.target.value;
-                }}
-                onPressEnter={handleSearch}
-                className="search-input"
               />
             </Col>
-
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>出版日期开始</Text>
-              </div>
-              <DatePicker
+              <SearchDatePicker
+                label="出版日期开始"
                 placeholder="请选择开始日期"
-                allowClear
-                size="large"
-                defaultValue={
-                  publishedDateBegin.current
-                    ? dayjs(publishedDateBegin.current)
-                    : null
-                }
-                onChange={(date) => {
-                  publishedDateBegin.current = date ? date.format("YYYY-MM-DD") : "";
-                }}
-                className="search-datepicker"
+                valueRef={publishedDateBegin}
               />
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <div className="search-label">
-                <Text strong>出版日期结束</Text>
-              </div>
-              <DatePicker
+              <SearchDatePicker
+                label="出版日期结束"
                 placeholder="请选择结束日期"
-                allowClear
-                size="large"
-                defaultValue={
-                  publishedDateEnd.current
-                    ? dayjs(publishedDateEnd.current)
-                    : null
-                }
-                onChange={(date) => {
-                  publishedDateEnd.current = date ? date.format("YYYY-MM-DD") : "";
-                }}
-                className="search-datepicker"
+                valueRef={publishedDateEnd}
               />
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
@@ -264,7 +245,7 @@ const BookBrowse: React.FC = () => {
 
       {/* 图书展示区域 */}
       <Card
-        title={`图书列表 (共 ${books.length} 本)`}
+        title={`图书列表 (共 ${totalBooks} 本)`}
         className="book-browse-list"
       >
         <div className="list-body">
@@ -307,13 +288,24 @@ const BookBrowse: React.FC = () => {
                           </Tag>
                         </div>
                         <Text type="secondary" className="card-isbn">
-                          ISBN: {book.isbn || "暂无"}
+                          ISBN: {book.isbn || "暂无ISBN"}
                         </Text>
                       </div>
                     </Card>
                   </Col>
                 ))}
               </Row>
+            )}
+            {/* 加载更多指示器 */}
+            {isFetchingNextPage && (
+              <div className="book-browse-loading-indicator">
+                <Spin size="large" />
+                <div className="loading-text">正在加载更多图书...</div>
+              </div>
+            )}
+            {/* 没有更多数据提示 */}
+            {!hasNextPage && books.length > 0 && (
+              <div className="book-browse-load-complete">已加载全部图书</div>
             )}
           </Spin>
         </div>

@@ -1,6 +1,12 @@
 // Book（图书）相关API服务
 import { apiClient } from "@/services/api";
-import type { BookVO, EditBookDTO, RawBook } from "@/types";
+import type {
+  BookVO,
+  EditBookDTO,
+  PaginationRequest,
+  PaginationResponse,
+  RawBook,
+} from "@/types";
 
 export interface BookSearchParams {
   title?: string;
@@ -31,6 +37,13 @@ export const bookService = {
   // 搜索图书
   search: (params: BookSearchParams): Promise<BookVO[]> => {
     return apiClient.get("/Books/search", { params });
+  },
+
+  // 分页搜索图书
+  searchPaginated: (
+    params: PaginationRequest & BookSearchParams
+  ): Promise<PaginationResponse<BookVO>> => {
+    return apiClient.get("/Books/searchPaginated", { params });
   },
 
   // 添加图书
